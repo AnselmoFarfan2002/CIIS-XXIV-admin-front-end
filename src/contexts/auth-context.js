@@ -8,10 +8,14 @@ const HANDLERS = {
   SIGN_OUT: "SIGN_OUT",
 };
 
+const expirationTime = new Date();
+expirationTime.setMinutes(expirationTime.getMinutes() + 120);
+
 const initialState = {
   isAuthenticated: false,
   isLoading: true,
   user: null,
+  expirationTime,
 };
 
 const handlers = {
@@ -79,16 +83,12 @@ export const AuthProvider = (props) => {
     }
 
     if (isAuthenticated) {
-      const user = {
-        id: "5e86809283e28b96d2d38537",
-        avatar: "/assets/avatars/avatar-anika-visser.png",
-        name: "Anika Visser",
-        email: "anika.visser@devias.io",
-      };
+      const user = JSON.parse(window.sessionStorage.getItem("ciisTacnaAdmin"));
 
       dispatch({
         type: HANDLERS.INITIALIZE,
         payload: user,
+        expirationTime,
       });
     } else {
       dispatch({
@@ -124,26 +124,27 @@ export const AuthProvider = (props) => {
     // };
 
     if (!response.ok) {
-      window.sessionStorage.setItem("authenticated", "true");
-
       // let userData = await response.json();
       // user = userData.resources[0];
-      // user.avatar = "/assets/avatars/avatar-default.png";
+      // user.avatar = "/assets/logos/logo-ciis-xxiv.png";
 
       user = {
-        id: "5e86809283e28b96d2d38537",
-        avatar: "/assets/avatars/avatar-anika-visser.png",
-        name: "Anika Visser",
-        email: "anika.visser@devias.io",
+        id: "1",
+        avatar: "/assets/logos/logo-ciis-xxiv.png",
+        name: "Anselmo",
+        firstLastname: "Farfan",
+        secondLastname: "Pajuelo",
+        phone: "+51 984532631",
+        email: "afarfanp@unjbg.edu.pe",
       };
+
+      dispatch({
+        type: HANDLERS.SIGN_IN,
+        payload: user,
+      });
     } else {
       throw new Error("Por favor revisa tu usuario y contraseña.");
     }
-
-    dispatch({
-      type: HANDLERS.SIGN_IN,
-      payload: user,
-    });
   };
 
   const signUp = async (email, name, password) => {
@@ -151,6 +152,8 @@ export const AuthProvider = (props) => {
   };
 
   const signOut = () => {
+    window.sessionStorage.removeItem("ciisTacnaAdmin");
+    window.sessionStorage.removeItem("authenticated");
     dispatch({
       type: HANDLERS.SIGN_OUT,
     });

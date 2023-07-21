@@ -18,8 +18,15 @@ import { Scrollbar } from "src/components/scrollbar";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 
-import React, { useState } from "react";
-import { RViewerTrigger, RViewer } from "react-viewerjs";
+import React from "react";
+import Lightbox from "yet-another-react-lightbox";
+
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import "yet-another-react-lightbox/styles.css";
+
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
+import { useState } from "react";
 
 export const CustomersTable = (props) => {
   const {
@@ -40,17 +47,8 @@ export const CustomersTable = (props) => {
     { style: "rgb(200,20,0)", label: "Observado" },
   ];
 
-  const [viewerIsOpen, setViewerIsOpen] = useState(false);
-  const toShow = [items[0].fileUniversity, items[0].voucher];
-  const [images, setImages] = useState(toShow);
-
-  const openViewer = () => {
-    setViewerIsOpen(true);
-  };
-
-  const closeViewer = () => {
-    setViewerIsOpen(false);
-  };
+  const [currentImages, setCurrentImages] = useState({});
+  const [openGallery, setOpenGallery] = useState(false);
 
   return (
     <Card>
@@ -64,14 +62,19 @@ export const CustomersTable = (props) => {
                 <TableCell>Celular</TableCell>
                 <TableCell>Tipo de inscripción</TableCell>
                 <TableCell>Estado</TableCell>
-                <TableCell>Matrícula</TableCell>
                 <TableCell>Voucher</TableCell>
+                <TableCell>Matrícula</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {items.map((customer) => {
                 const isSelected = selected.includes(customer.id);
+
+                let slides = [];
+                slides.push({ src: customer.voucher });
+                if (customer.fileUniversity && customer.fileUniversity != "")
+                  slides.push({ src: customer.fileUniversity });
 
                 return (
                   <TableRow hover key={customer.id} selected={isSelected}>
@@ -92,15 +95,16 @@ export const CustomersTable = (props) => {
                     </TableCell>
                     <TableCell>
                       <Avatar
-                        src={customer.fileUniversity}
-                        sx={{ border: 1, borderColor: "rgba(0,0,0,.5)" }}
-                        onClick={openViewer}
+                        src={customer.voucher}
+                        sx={{ border: 1, borderColor: "rgba(0,0,0,.5)", cursor: "pointer" }}
+                        onClick={() => {setCurrentImages({slides, index: 0}); setOpenGallery(true);}}
                       />
                     </TableCell>
                     <TableCell>
                       <Avatar
-                        src={customer.voucher}
-                        sx={{ border: 1, borderColor: "rgba(0,0,0,.5)" }}
+                        src={customer.fileUniversity}
+                        sx={{ border: 1, borderColor: "rgba(0,0,0,.5)", cursor: "pointer" }}
+                        onClick={() => {setCurrentImages({slides, index: 1}); setOpenGallery(true);}}
                       />
                     </TableCell>
                     <TableCell>
@@ -130,11 +134,36 @@ export const CustomersTable = (props) => {
         rowsPerPageOptions={[5, 10, 25]}
       />
 
-      <Viewer
-        visible={viewerIsOpen}
-        onClose={closeViewer}
-        images={images.map((image) => ({ src: image }))}
-        activeIndex={0} // Índice de la imagen activa inicial
+      <Lightbox
+        index={currentImages.index}
+        styles={{ container: { backgroundColor: "rgba(0, 0, 0, .7)" } }}
+        open={openGallery}
+        close={() => setOpenGallery(false)}
+        slides={currentImages.slides}
+        plugins={[Zoom, Thumbnails]}
+        animation={0.02}
+        zoom={{
+          maxZoomPixelRatio: 5, // Aumenta o disminuye según quieras permitir más o menos zoom
+          zoomInMultiplier: 1.2, // Aumenta o disminuye para ajustar la velocidad del zoom con la rueda del mouse o gestos de pinza
+          doubleTapDelay: 300, // Aumenta este valor para requerir un doble toque más largo para activar el zoom
+          doubleClickDelay: 300, // Aumenta este valor para requerir un doble clic más largo para activar el zoom
+          doubleClickMaxStops: 2, // Puedes dejarlo en 2 para un doble clic con un aumento máximo de 2 veces el tamaño original
+          keyboardMoveDistance: 100, // Aumenta o disminuye según quieras cambiar la velocidad de desplazamiento con las teclas de flecha
+          wheelZoomDistanceFactor: 1000, // Disminuye este valor para tener un zoom más lento con la rueda del mouse
+          pinchZoomDistanceFactor: 1000, // Disminuye este valor para tener un zoom más lento con gestos de pinza en dispositivos táctiles
+          scrollToZoom: 1, // Activa el zoom al desplazarse con la rueda del mouse
+        }}
+        carousel={{ preload: 1 }}
+        thumbnails={{
+          position: "bottom",
+          width: 120,
+          height: 80,
+          border: 1,
+          borderRadius: 4,
+          padding: 4,
+          gap: 16,
+          showToggle: 0,
+        }}
       />
     </Card>
   );

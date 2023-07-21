@@ -1,69 +1,42 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Divider,
-  Typography
-} from '@mui/material';
+import { Avatar, Box, Card, CardContent, Divider, Typography } from "@mui/material";
+import { useAuth } from "src/hooks/use-auth";
 
-const user = {
-  avatar: '/assets/avatars/avatar-anika-visser.png',
-  city: 'Los Angeles',
-  country: 'USA',
-  jobTitle: 'Senior Developer',
-  name: 'Anika Visser',
-  timezone: 'GTM-7'
-};
+export const AccountProfile = () => {
+  const { user } = useAuth();
 
-export const AccountProfile = () => (
-  <Card>
-    <CardContent>
-      <Box
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-      >
-        <Avatar
-          src={user.avatar}
+  return (
+    <Card>
+      <CardContent>
+        <Box
           sx={{
-            height: 80,
-            mb: 2,
-            width: 80
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
           }}
-        />
-        <Typography
-          gutterBottom
-          variant="h5"
         >
-          {user.name}
-        </Typography>
-        <Typography
-          color="text.secondary"
-          variant="body2"
-        >
-          {user.city} {user.country}
-        </Typography>
-        <Typography
-          color="text.secondary"
-          variant="body2"
-        >
-          {user.timezone}
-        </Typography>
-      </Box>
-    </CardContent>
-    <Divider />
-    <CardActions>
-      <Button
-        fullWidth
-        variant="text"
-      >
-        Upload picture
-      </Button>
-    </CardActions>
-  </Card>
-);
+          <Avatar
+            src={"/assets/logos/logo-ciis-xxiv.png"}
+            sx={{
+              height: 80,
+              mb: 2,
+              width: 80,
+            }}
+          />
+          <Typography gutterBottom variant="h5">
+            {user?.name} {user?.firstLastname} {user?.secondLastname}
+          </Typography>
+          <Typography color="text.secondary" gutterBottom variant="body1" mb={2} mt={-1}>
+            Administrador CIIS
+          </Typography>
+          <Typography color="text.secondary" variant="body2">
+            Tacna, Perú
+          </Typography>
+          <Typography color="text.secondary" variant="body2">
+            ESIS ft. CIIS
+          </Typography>
+        </Box>
+      </CardContent>
+      <Divider />
+    </Card>
+  );
+};

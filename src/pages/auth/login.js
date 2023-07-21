@@ -37,7 +37,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Login | Devias Kit</title>
+        <title>Iniciar sesión | CIIS</title>
       </Head>
       <Box
         sx={{
