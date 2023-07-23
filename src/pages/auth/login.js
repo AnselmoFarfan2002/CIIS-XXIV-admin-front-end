@@ -19,12 +19,12 @@ const Page = () => {
   const formik = useFormik({
     initialValues: {},
     validationSchema: Yup.object({
-      username: Yup.string().max(255).required("Nombre de usuario requerido."),
+      email: Yup.string().max(255).required("Correo electrónico requerido."),
       password: Yup.string().max(255).required("Contraseña requerida."),
     }),
     onSubmit: async (values, helpers) => {
       try {
-        await auth.signIn(values.username, values.password);
+        await auth.signIn(values.email, values.password);
         router.push("/");
       } catch (err) {
         helpers.setStatus({ success: false });
@@ -66,15 +66,15 @@ const Page = () => {
             <form noValidate onSubmit={formik.handleSubmit}>
               <Stack spacing={3}>
                 <TextField
-                  error={!!(formik.touched.username && formik.errors.username)}
+                  error={!!(formik.touched.email && formik.errors.email)}
                   fullWidth
-                  helperText={formik.touched.username && formik.errors.username}
-                  label="Nombre de usuario"
-                  name="username"
+                  helperText={formik.touched.email && formik.errors.email}
+                  label="Correo electrónico"
+                  name="email"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                   type="text"
-                  value={formik.values.username}
+                  value={formik.values.email}
                 />
                 <TextField
                   error={!!(formik.touched.password && formik.errors.password)}

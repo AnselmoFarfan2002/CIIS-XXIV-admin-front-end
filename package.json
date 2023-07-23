@@ -33,6 +33,7 @@
     "react": "18.2.0",
     "react-apexcharts": "1.4.0",
     "react-dom": "18.2.0",
+    "react-spinners": "^0.13.8",
     "react-viewerjs": "^0.1.9",
     "simplebar-react": "^3.2.1",
     "yet-another-react-lightbox": "^3.11.4",

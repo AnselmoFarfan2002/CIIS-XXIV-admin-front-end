@@ -1,5 +1,8 @@
+export const domain = "https://testapi.ciistacna.com";
+
 const URI = {
-  session: "https://ciistacna.com/api/v1/sessions",
+  sessions: domain + "/api/v1/sessions",
+  registrations: domain + "/api/v1/registrations",
 };
 
 export default URI;

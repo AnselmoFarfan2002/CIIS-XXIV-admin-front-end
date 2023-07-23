@@ -105,13 +105,14 @@ export const AuthProvider = (props) => {
     []
   );
 
-  const signIn = async (username, password) => {
-    let response = await fetch(URI.session, {
+  const signIn = async (email, password) => {
+    let response = await fetch(URI.sessions, {
       method: "POST",
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ email, password }),
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
 
     let user;
@@ -123,20 +124,14 @@ export const AuthProvider = (props) => {
     //   email: "anika.visser@devias.io",
     // };
 
-    if (!response.ok) {
-      // let userData = await response.json();
+    if (response.ok) {
+      let userData = await response.json();
       // user = userData.resources[0];
-      // user.avatar = "/assets/logos/logo-ciis-xxiv.png";
+      user = userData;
+      user.avatar = "/assets/logos/logo-ciis-xxiv.png";
 
-      user = {
-        id: "1",
-        avatar: "/assets/logos/logo-ciis-xxiv.png",
-        name: "Anselmo",
-        firstLastname: "Farfan",
-        secondLastname: "Pajuelo",
-        phone: "+51 984532631",
-        email: "afarfanp@unjbg.edu.pe",
-      };
+      window.sessionStorage.setItem("authenticated", "true");
+      window.sessionStorage.setItem("ciisTacnaAdmin", JSON.stringify(user));
 
       dispatch({
         type: HANDLERS.SIGN_IN,

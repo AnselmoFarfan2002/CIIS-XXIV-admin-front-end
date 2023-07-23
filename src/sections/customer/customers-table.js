@@ -27,6 +27,8 @@ import "yet-another-react-lightbox/styles.css";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import { useState } from "react";
+import { domain } from "src/contexts/url-context";
+import URI from "src/contexts/url-context";
 
 export const CustomersTable = (props) => {
   const {
@@ -50,6 +52,30 @@ export const CustomersTable = (props) => {
   const [currentImages, setCurrentImages] = useState({});
   const [openGallery, setOpenGallery] = useState(false);
 
+  const handleChangeStatus = ({ id }, status) => {
+    let buttonCheck = document.getElementById("btn-check-user-" + id);
+    let buttonAlert = document.getElementById("btn-alert-user-" + id);
+    buttonCheck.disabled = true;
+    buttonAlert.disabled = true;
+    buttonCheck.classList.add("Mui-disabled");
+    buttonAlert.classList.add("Mui-disabled");
+
+    fetch(URI.registrations + `/${id}/status`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((res) => {
+        if (res.ok) setOpenGallery(false);
+      })
+      .catch((res) => {
+        console.log(res);
+      });
+  };
+
   return (
     <Card>
       <Scrollbar>
@@ -69,15 +95,15 @@ export const CustomersTable = (props) => {
             </TableHead>
             <TableBody>
               {items.map((customer) => {
-                const isSelected = selected.includes(customer.id);
-
                 let slides = [];
-                slides.push({ src: customer.voucher });
-                if (customer.fileUniversity && customer.fileUniversity != "")
-                  slides.push({ src: customer.fileUniversity });
+                slides.push({ src: domain + `/api/v1/registrations/${customer.id}/files/voucher` });
+                if (customer.typeattendee != 3)
+                  slides.push({
+                    src: domain + `/api/v1/registrations/${customer.id}/files/university`,
+                  });
 
                 return (
-                  <TableRow hover key={customer.id} selected={isSelected}>
+                  <TableRow hover key={customer.id}>
                     <TableCell>
                       <Stack alignItems="center" direction="row" spacing={2}>
                         <Typography variant="subtitle2">
@@ -87,32 +113,55 @@ export const CustomersTable = (props) => {
                     </TableCell>
                     <TableCell>{customer.email}</TableCell>
                     <TableCell>{customer.phone}</TableCell>
-                    <TableCell>{typeIns[customer.typeatendee]}</TableCell>
+                    <TableCell>{typeIns[customer.typeattendee]}</TableCell>
                     <TableCell>
-                      <Typography fontWeight={"bold"} color={statusContent[customer.status].style}>
-                        {statusContent[customer.status].label}
+                      <Typography
+                        fontWeight={"bold"}
+                        color={statusContent[customer.enrollmentstatus].style}
+                      >
+                        {statusContent[customer.enrollmentstatus].label}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Avatar
-                        src={customer.voucher}
+                        src={slides[0].src}
                         sx={{ border: 1, borderColor: "rgba(0,0,0,.5)", cursor: "pointer" }}
-                        onClick={() => {setCurrentImages({slides, index: 0}); setOpenGallery(true);}}
+                        onClick={() => {
+                          setCurrentImages({ slides, index: 0 });
+                          setOpenGallery(true);
+                        }}
                       />
                     </TableCell>
                     <TableCell>
-                      <Avatar
-                        src={customer.fileUniversity}
-                        sx={{ border: 1, borderColor: "rgba(0,0,0,.5)", cursor: "pointer" }}
-                        onClick={() => {setCurrentImages({slides, index: 1}); setOpenGallery(true);}}
-                      />
+                      {customer.typeattendee != 3 && (
+                        <Avatar
+                          src={slides[1].src}
+                          sx={{ border: 1, borderColor: "rgba(0,0,0,.5)", cursor: "pointer" }}
+                          onClick={() => {
+                            setCurrentImages({ slides, index: 1 });
+                            setOpenGallery(true);
+                          }}
+                        />
+                      )}
                     </TableCell>
                     <TableCell>
                       <ButtonGroup variant="contained" aria-label="Controles de confirmación">
-                        <Button color="success" disabled={customer.status == 2} title="Confirmar">
+                        <Button
+                          id={"btn-check-user-" + customer.id}
+                          color="success"
+                          disabled={customer.enrollmentstatus == 2}
+                          title="Confirmar"
+                          onClick={() => handleChangeStatus(customer, "2")}
+                        >
                           <CheckCircleIcon />
                         </Button>
-                        <Button color="error" disabled={customer.status == 2} title="Observar">
+                        <Button
+                          id={"btn-alert-user-" + customer.id}
+                          color="error"
+                          disabled={customer.enrollmentstatus == 2}
+                          title="Observar"
+                          onClick={() => handleChangeStatus(customer, "3")}
+                        >
                           <ErrorIcon />
                         </Button>
                       </ButtonGroup>
@@ -127,6 +176,7 @@ export const CustomersTable = (props) => {
       <TablePagination
         component="div"
         count={count}
+        labelRowsPerPage="Filas por página"
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         page={page}
