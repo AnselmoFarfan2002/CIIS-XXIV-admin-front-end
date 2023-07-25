@@ -35,6 +35,8 @@ export const CustomersTable = (props) => {
     count = 0,
     items = [],
     onPageChange = () => {},
+    handleSetCounter = () => {},
+    counter = 0,
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
@@ -52,7 +54,7 @@ export const CustomersTable = (props) => {
   const [currentImages, setCurrentImages] = useState({});
   const [openGallery, setOpenGallery] = useState(false);
 
-  const handleChangeStatus = ({ id }, status) => {
+  const handleChangeStatus = ({ id }, status, idx) => {
     let buttonCheck = document.getElementById("btn-check-user-" + id);
     let buttonAlert = document.getElementById("btn-alert-user-" + id);
     buttonCheck.disabled = true;
@@ -69,7 +71,14 @@ export const CustomersTable = (props) => {
       credentials: "include",
     })
       .then((res) => {
-        if (res.ok) setOpenGallery(false);
+        if (res.ok) {
+          handleSetCounter();
+        } else {
+          buttonCheck.disabled = false;
+          buttonAlert.disabled = false;
+          buttonCheck.classList.remove("Mui-disabled");
+          buttonAlert.classList.remove("Mui-disabled");
+        }
       })
       .catch((res) => {
         console.log(res);
@@ -94,7 +103,7 @@ export const CustomersTable = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((customer) => {
+              {items.map((customer, idx) => {
                 let slides = [];
                 slides.push({ src: domain + `/api/v1/registrations/${customer.id}/files/voucher` });
                 if (customer.typeattendee != 3)
@@ -151,7 +160,7 @@ export const CustomersTable = (props) => {
                           color="success"
                           disabled={customer.enrollmentstatus == 2}
                           title="Confirmar"
-                          onClick={() => handleChangeStatus(customer, "2")}
+                          onClick={() => handleChangeStatus(customer, "2", idx)}
                         >
                           <CheckCircleIcon />
                         </Button>
@@ -160,7 +169,7 @@ export const CustomersTable = (props) => {
                           color="error"
                           disabled={customer.enrollmentstatus == 2}
                           title="Observar"
-                          onClick={() => handleChangeStatus(customer, "3")}
+                          onClick={() => handleChangeStatus(customer, "3", idx)}
                         >
                           <ErrorIcon />
                         </Button>
@@ -223,12 +232,14 @@ CustomersTable.propTypes = {
   count: PropTypes.number,
   items: PropTypes.array,
   onDeselectAll: PropTypes.func,
+  handleSetCounter: PropTypes.func,
   onDeselectOne: PropTypes.func,
   onPageChange: PropTypes.func,
   onRowsPerPageChange: PropTypes.func,
   onSelectAll: PropTypes.func,
   onSelectOne: PropTypes.func,
   page: PropTypes.number,
+  counter: PropTypes.number,
   rowsPerPage: PropTypes.number,
   selected: PropTypes.array,
 };

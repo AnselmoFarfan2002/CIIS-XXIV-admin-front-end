@@ -146,12 +146,21 @@ export const AuthProvider = (props) => {
     throw new Error("Registro no implementado");
   };
 
-  const signOut = () => {
+  const signOut = async () => {
     window.sessionStorage.removeItem("ciisTacnaAdmin");
     window.sessionStorage.removeItem("authenticated");
-    dispatch({
-      type: HANDLERS.SIGN_OUT,
-    });
+
+    try {
+      let response = await fetch(URI.sessions, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      // dispatch({ type: HANDLERS.SIGN_OUT });
+    } catch (err) {
+      console.clear();
+      console.error(err);
+    }
   };
 
   return (

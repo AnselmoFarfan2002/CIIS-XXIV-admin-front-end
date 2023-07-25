@@ -19,6 +19,7 @@ const Page = () => {
   const [showOption, setShowOption] = useState(0);
   const [loading, setLoading] = useState(true); // Agregamos el estado loading
   const [customers, setCustomers] = useState([]); // Estado para almacenar los datos de los clientes
+  const [counter, setCounter] = useState(0);
 
   useEffect(() => {
     setLoading(true); // Indicamos que se están cargando los datos
@@ -38,14 +39,14 @@ const Page = () => {
         let noConfirmados = data.filter((a) => a.enrollmentstatus != 2);
         noConfirmados.sort((a, b) => a.enrollmentstatus - b.enrollmentstatus);
 
-        if (showOption == 0){
+        if (showOption == 0) {
           let confirmados = data.filter((a) => a.enrollmentstatus == 2);
           data2render = [...noConfirmados, ...confirmados];
-        }
-        else if (showOption == 1) data2render = noConfirmados.filter((a) => a.enrollmentstatus == 1);
+        } else if (showOption == 1)
+          data2render = noConfirmados.filter((a) => a.enrollmentstatus == 1);
         else if (showOption == 2) data2render = data.filter((a) => a.enrollmentstatus == 2);
-        else if (showOption == 3) data2render = noConfirmados.filter((a) => a.enrollmentstatus == 3);
-
+        else if (showOption == 3)
+          data2render = noConfirmados.filter((a) => a.enrollmentstatus == 3);
 
         // Actualizamos el estado customers con los datos obtenidos y marcamos loading como falso
         setCustomers(applyPagination(data2render, page, rowsPerPage));
@@ -57,7 +58,7 @@ const Page = () => {
     };
 
     fetchCustomers();
-  }, [page, rowsPerPage, showOption]);
+  }, [page, rowsPerPage, showOption, counter]);
 
   const handlePageChange = useCallback((event, value) => {
     setPage(value);
@@ -67,10 +68,14 @@ const Page = () => {
     setRowsPerPage(event.target.value);
   }, []);
 
-  const handleChangeFilter = (event) => {
+  const handleChangeFilter = useCallback((event) => {
     setShowOption(event.target.value);
-    console.log(event.target.value, showOption)
-  };
+    console.log(event.target.value, showOption);
+  }, []);
+
+  const handleSetCounter = useCallback(() => {
+    setCounter((val) => val + 1);
+  }, []);
 
   return (
     <>
@@ -84,7 +89,7 @@ const Page = () => {
           py: 8,
         }}
       >
-        <Container maxWidth="xl">
+        <Container maxWidth="xl" id={counter}>
           <Stack spacing={3}>
             <Stack direction="row" justifyContent="space-between" spacing={4}>
               <Stack spacing={1}>
@@ -109,11 +114,13 @@ const Page = () => {
                 </FormControl>
               </Stack>
             </Stack>
-            <CustomersSearch />
+            <CustomersSearch handleSetCounter={handleSetCounter} />
 
             {loading && <GridLoader color="#36d7b7" size={50} />}
             {!loading && (
               <CustomersTable
+                handleSetCounter={handleSetCounter}
+                counter={counter}
                 count={customers.length}
                 items={customers}
                 onPageChange={handlePageChange}
