@@ -1,4 +1,4 @@
-export const domain = "https://example.extension";
+export const domain = "https://ciistacna.com";
 
 const URI = {
   sessions: domain + "/api/v1/sessions",

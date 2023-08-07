@@ -138,6 +138,9 @@ export const AuthProvider = (props) => {
         payload: user,
       });
     } else {
+      let error = await response.json();
+      console.log(error)
+
       throw new Error("Por favor revisa tu usuario y contraseña.");
     }
   };

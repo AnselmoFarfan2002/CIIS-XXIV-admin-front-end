@@ -30,7 +30,7 @@ export const Layout = (props) => {
             position: 'relative'
           }}
         >
-          <Box
+          {/* <Box
             component="header"
             sx={{
               left: 0,
@@ -51,7 +51,7 @@ export const Layout = (props) => {
             >
               <Logo />
             </Box>
-          </Box>
+          </Box> */}
           {children}
         </Grid>
         <Grid
