@@ -19,6 +19,7 @@ const Page = () => {
   const [showOption, setShowOption] = useState(0);
   const [loading, setLoading] = useState(true); // Agregamos el estado loading
   const [customers, setCustomers] = useState([]); // Estado para almacenar los datos de los clientes
+  const [total, setTotal] = useState(0);
   const [counter, setCounter] = useState(0);
 
   useEffect(() => {
@@ -51,6 +52,7 @@ const Page = () => {
         // Actualizamos el estado customers con los datos obtenidos y marcamos loading como falso
         setCustomers(applyPagination(data2render, page, rowsPerPage));
         setLoading(false);
+        setTotal(data2render.length);
       } catch (error) {
         // Si hay un error, mostramos un mensaje o manejo de errores según tus necesidades
         setLoading(false);
@@ -58,7 +60,7 @@ const Page = () => {
     };
 
     fetchCustomers();
-  }, [page, rowsPerPage, showOption, counter]);
+  }, [page, rowsPerPage, showOption, counter, total]);
 
   const handlePageChange = useCallback((event, value) => {
     setPage(value);
@@ -69,6 +71,7 @@ const Page = () => {
   }, []);
 
   const handleChangeFilter = useCallback((event) => {
+    setPage(0);
     setShowOption(event.target.value);
     console.log(event.target.value, showOption);
   }, []);
@@ -121,7 +124,7 @@ const Page = () => {
               <CustomersTable
                 handleSetCounter={handleSetCounter}
                 counter={counter}
-                count={customers.length}
+                count={total}
                 items={customers}
                 onPageChange={handlePageChange}
                 onRowsPerPageChange={handleRowsPerPageChange}
