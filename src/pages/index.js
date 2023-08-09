@@ -28,12 +28,13 @@ const Page = () => {
     // Función asincrónica para obtener los datos de los clientes
     const fetchCustomers = async () => {
       try {
-        let data = await fetch(URI.registrations, {
+        let data = await fetch(URI.registrations + `?limit=${1000}`, {
           method: "GET",
           credentials: "include",
         });
 
         data = await data.json();
+        data = data.registrations;
 
         // Aquí aplicamos la lógica para filtrar los clientes según el showOption y paginarlos
         let data2render = [];
@@ -67,6 +68,7 @@ const Page = () => {
   }, []);
 
   const handleRowsPerPageChange = useCallback((event) => {
+    setPage(0);
     setRowsPerPage(event.target.value);
   }, []);
 

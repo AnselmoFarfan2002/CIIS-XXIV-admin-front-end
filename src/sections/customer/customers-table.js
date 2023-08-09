@@ -10,9 +10,8 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  Avatar,
 } from "@mui/material";
-import { ButtonGroup, Button } from "@mui/material";
+import { ButtonGroup, Button, IconButton } from "@mui/material";
 import { Scrollbar } from "src/components/scrollbar";
 
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -29,6 +28,12 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 import { useState } from "react";
 import { domain } from "src/contexts/url-context";
 import URI from "src/contexts/url-context";
+
+import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
+import FeedIcon from "@mui/icons-material/Feed";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import { FileUpload } from "@mui/icons-material";
+import CustomerFormEdit from "./customers-edit";
 
 export const CustomersTable = (props) => {
   const {
@@ -53,6 +58,9 @@ export const CustomersTable = (props) => {
 
   const [currentImages, setCurrentImages] = useState({});
   const [openGallery, setOpenGallery] = useState(false);
+
+  const [openForm, setOpenForm] = useState(false);
+  const [user2edit, setUser2edit] = useState(items[0]);
 
   const handleChangeStatus = ({ id }, status, idx) => {
     let buttonCheck = document.getElementById("btn-check-user-" + id);
@@ -85,6 +93,11 @@ export const CustomersTable = (props) => {
       });
   };
 
+  const handleOpenForm = (user) => {
+    setOpenForm(true);
+    setUser2edit(user);
+  };
+
   return (
     <Card>
       <Scrollbar>
@@ -111,12 +124,14 @@ export const CustomersTable = (props) => {
                     src: domain + `/api/v1/registrations/${customer.id}/files/university`,
                   });
 
+                customer.slides = slides;
+
                 return (
                   <TableRow hover key={customer.id}>
                     <TableCell>
                       <Stack alignItems="center" direction="row" spacing={2}>
                         <Typography variant="subtitle2">
-                          {customer.name} {customer.firstLastname} {customer.secondLastname}
+                          {customer.name} {customer.lastname}
                         </Typography>
                       </Stack>
                     </TableCell>
@@ -132,25 +147,35 @@ export const CustomersTable = (props) => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Avatar
-                        src={slides[0].src}
-                        sx={{ border: 1, borderColor: "rgba(0,0,0,.5)", cursor: "pointer" }}
+                      <IconButton
+                        aria-label="Ver voucher"
+                        size="medium"
                         onClick={() => {
                           setCurrentImages({ slides, index: 0 });
                           setOpenGallery(true);
                         }}
-                      />
+                        color="light"
+                        sx={{ border: 0.2, borderColor: "rgba(28, 37, 54, .5)" }}
+                        variant="contained"
+                      >
+                        <RequestQuoteIcon />
+                      </IconButton>
                     </TableCell>
                     <TableCell>
                       {customer.typeattendee != 3 && (
-                        <Avatar
-                          src={slides[1].src}
-                          sx={{ border: 1, borderColor: "rgba(0,0,0,.5)", cursor: "pointer" }}
+                        <IconButton
+                          aria-label="Ver voucher"
+                          size="medium"
                           onClick={() => {
                             setCurrentImages({ slides, index: 1 });
                             setOpenGallery(true);
                           }}
-                        />
+                          color="light"
+                          sx={{ border: 0.2, borderColor: "rgba(28, 37, 54, .5)" }}
+                          variant="contained"
+                        >
+                          <FeedIcon />
+                        </IconButton>
                       )}
                     </TableCell>
                     <TableCell>
@@ -173,6 +198,17 @@ export const CustomersTable = (props) => {
                         >
                           <ErrorIcon />
                         </Button>
+                        {customer.enrollmentstatus == 3 && (
+                          <Button
+                            id={"btn-edit-user-" + customer.id}
+                            color="info"
+                            disabled={customer.enrollmentstatus == 2}
+                            title="Editar"
+                            onClick={() => handleOpenForm(customer)}
+                          >
+                            <BorderColorIcon />
+                          </Button>
+                        )}
                       </ButtonGroup>
                     </TableCell>
                   </TableRow>
@@ -223,6 +259,13 @@ export const CustomersTable = (props) => {
           gap: 16,
           showToggle: 0,
         }}
+      />
+
+      <CustomerFormEdit
+        openForm={openForm}
+        user2edit={user2edit}
+        onClose={() => setOpenForm(false)}
+        handleSetCounter={handleSetCounter}
       />
     </Card>
   );
