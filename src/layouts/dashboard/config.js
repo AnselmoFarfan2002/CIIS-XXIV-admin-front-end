@@ -102,4 +102,13 @@ export const items = [
       </SvgIcon>
     ),
   },
+  {
+    title: "Añadir cuenta",
+    path: "/users",
+    icon: (
+      <SvgIcon fontSize="small">
+        <UserPlusIcon />
+      </SvgIcon>
+    ),
+  },
 ];
