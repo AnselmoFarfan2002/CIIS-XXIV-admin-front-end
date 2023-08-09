@@ -95,15 +95,15 @@ export const items = [
       </SvgIcon>
     ),
   },
-  // {
-  //   title: "Sanear clientes",
-  //   path: "/erroneous-customers",
-  //   icon: (
-  //     <SvgIcon fontSize="small">
-  //       <PersonOffIcon />
-  //     </SvgIcon>
-  //   ),
-  // },
+  {
+    title: "Asistencia",
+    path: "/attendance",
+    icon: (
+      <SvgIcon fontSize="small">
+        <PersonOffIcon />
+      </SvgIcon>
+    ),
+  },
   {
     title: "Perfil",
     path: "/account",
