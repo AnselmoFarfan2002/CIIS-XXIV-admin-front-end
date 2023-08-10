@@ -119,7 +119,7 @@ const Page = () => {
                 </FormControl>
               </Stack>
             </Stack>
-            <CustomersSearch handleSetCounter={handleSetCounter} />
+            <CustomersSearch handleSetCounter={handleSetCounter} status={showOption} />
 
             {loading && <GridLoader color="#36d7b7" size={50} />}
             {!loading && (
