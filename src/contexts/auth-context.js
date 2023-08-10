@@ -128,15 +128,9 @@ export const AuthProvider = (props) => {
 
     let user;
 
-    // const user = {
-    //   id: "5e86809283e28b96d2d38537",
-    //   avatar: "/assets/avatars/avatar-anika-visser.png",
-    //   name: "Anika Visser",
-    //   email: "anika.visser@devias.io",
-    // };
-
     if (response.ok) {
       let userData = await response.json();
+      console.log(userData);
       // user = userData.resources[0];
       user = userData;
       user.avatar = "/assets/logos/logo-ciis-xxiv.png";
@@ -150,7 +144,7 @@ export const AuthProvider = (props) => {
       });
     } else {
       let error = await response.json();
-      console.log(error)
+      console.log(error);
 
       throw new Error("Por favor revisa tu usuario y contraseña.");
     }

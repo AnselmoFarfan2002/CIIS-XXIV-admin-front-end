@@ -2,22 +2,23 @@ import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
 import ChevronUpDownIcon from "@heroicons/react/24/solid/ChevronUpDownIcon";
-import {
-  Box,
-  Divider,
-  Drawer,
-  Stack,
-  SvgIcon,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
+import { Box, Divider, Drawer, Stack, SvgIcon, Typography, useMediaQuery } from "@mui/material";
 import { Logo } from "src/components/logo";
 import { Scrollbar } from "src/components/scrollbar";
-import { items } from "./config";
+import { vistaOrganizador, vistaAdministrador } from "./config";
 import { SideNavItem } from "./side-nav-item";
+import { useAuth } from "src/hooks/use-auth";
 
 export const SideNav = (props) => {
   const { open, onClose } = props;
+
+  const { user } = useAuth();
+  let items = [];
+  if (user.role == 3) items = vistaAdministrador;
+  else if (user.role == 1) items = vistaOrganizador;
+
+  console.log(items, user.role, vistaOrganizador);
+
   const pathname = usePathname();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
 

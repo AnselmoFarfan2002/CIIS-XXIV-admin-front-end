@@ -46,9 +46,10 @@ const Page = () => {
 
     if (event.target.checkValidity()) {
       let dni = event.target.querySelector("input").value;
-      fetch(URI.events + `/12/attendance?user=${dni}`)
+      fetch(URI.attendance(12, dni))
         .then((res) => {
-          if (res.ok) return setSuccess(true);
+          console.log(res.status)
+          if (res.status === 201) return setSuccess(true);
           throw new Error();
         })
         .catch(() => setFailure(true));

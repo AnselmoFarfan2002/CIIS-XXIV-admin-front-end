@@ -68,7 +68,7 @@ const CustomerFormEdit = (props) => {
     if (event.target.checkValidity()) {
       let data = new FormData(event.target);
       // displayFormData(data); // show form data at console
-      fetch(URI.users, {
+      fetch(URI.registrations + `/${user2edit.id}`, {
         method: "PUT",
         body: data,
       })
@@ -174,7 +174,7 @@ const CustomerFormEdit = (props) => {
                   <input
                     style={{ display: "none" }}
                     id="upload-photo-voucher"
-                    name="fileVoucher"
+                    name="filevoucher"
                     type="file"
                     accept="image/*"
                     onChange={handleVoucherChange}
@@ -211,7 +211,7 @@ const CustomerFormEdit = (props) => {
                     <input
                       style={{ display: "none" }}
                       id="upload-photo-university"
-                      name="fileUniversity"
+                      name="fileuniversity"
                       type="file"
                       accept="image/*"
                       onChange={handleUniversityChange}
