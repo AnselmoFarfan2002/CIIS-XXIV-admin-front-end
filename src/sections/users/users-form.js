@@ -81,7 +81,6 @@ export const UsersForm = () => {
                   name="name"
                   onChange={handleChange}
                   required
-                  value={values.newName}
                 />
               </Grid>
               <Grid xs={12} md={6}>
@@ -140,7 +139,7 @@ export const UsersForm = () => {
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: "flex-end" }}>
-          <Button variant="contained">Crear cuenta</Button>
+          <Button type="sumbmit" variant="contained">Crear cuenta</Button>
         </CardActions>
       </Card>
     </form>
