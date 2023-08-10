@@ -11,6 +11,7 @@ import {
   Unstable_Grid2 as Grid,
 } from "@mui/material";
 import { useAuth } from "src/hooks/use-auth";
+import { useFormik } from 'formik';
 
 const states = [
   {
@@ -42,12 +43,32 @@ export const UsersForm = () => {
     }));
   }, []);
 
-  const handleSubmit = useCallback((event) => {
-    event.preventDefault();
-  }, []);
+  
+
+  // const formik = useFormik({
+  //   initialValues: {
+  //     newEmail: '',
+  //     newName: '',
+  //     newPassword: '',
+  //     submit: null
+  //   },
+  //   onSubmit: async (values, helpers) => {
+  //     try {
+  //       await auth.createAcc(values.newName, values.newFirstLastname, values.newSecondLastname, values.newEmail, values.newPhone, values.newPassword);
+  //       router.push('/');
+  //     } catch (err) {
+  //       helpers.setStatus({ success: false });
+  //       helpers.setErrors({ submit: err.message });
+        // helpers.setSubmitting(false);
+  //     }
+  //   }
+  // });
 
   return (
-    <form autoComplete="off" noValidate onSubmit={handleSubmit}>
+    <form 
+      autoComplete="off" 
+      noValidate 
+      onSubmit={handleSubmit}>
       <Card>
         <CardHeader subheader="Rellenar los campos con la información necesaria" title="Formulario" />
         <CardContent sx={{ pt: 0 }}>
@@ -60,7 +81,7 @@ export const UsersForm = () => {
                   name="name"
                   onChange={handleChange}
                   required
-                  value={values.name}
+                  value={values.newName}
                 />
               </Grid>
               <Grid xs={12} md={6}>
@@ -70,7 +91,7 @@ export const UsersForm = () => {
                   name="firstLastname"
                   onChange={handleChange}
                   required
-                  value={values.firstLastname}
+                  value={formik.values.newFirstLastname}
                 />
               </Grid>
               <Grid xs={12} md={6}>
@@ -80,7 +101,7 @@ export const UsersForm = () => {
                   name="secondLastname"
                   onChange={handleChange}
                   required
-                  value={values.secondLastname}
+                  value={formik.values.newSecondLastname}
                 />
               </Grid>
               <Grid xs={12} md={6}>
@@ -90,7 +111,7 @@ export const UsersForm = () => {
                   name="email"
                   onChange={handleChange}
                   required
-                  value={values.email}
+                  value={formik.values.newEmail}
                 />
               </Grid>
               <Grid xs={12} md={6}>
@@ -100,7 +121,7 @@ export const UsersForm = () => {
                   name="phone"
                   onChange={handleChange}
                   type="text"
-                  value={values.phone}
+                  value={formik.values.newPhone}
                 />
               </Grid>
               <Grid xs={12} md={6}>
@@ -111,7 +132,7 @@ export const UsersForm = () => {
                   onChange={handleChange}
                   type="password"
                   required
-                  value={values.password}
+                  value={formik.values.newPassword}
                 />
               </Grid>
             </Grid>
@@ -119,7 +140,7 @@ export const UsersForm = () => {
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: "flex-end" }}>
-          <Button variant="contained" disabled>Save details</Button>
+          <Button variant="contained">Crear cuenta</Button>
         </CardActions>
       </Card>
     </form>
