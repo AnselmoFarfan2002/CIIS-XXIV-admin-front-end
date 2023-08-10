@@ -26,7 +26,7 @@ export const AccountProfile = () => {
             {user?.name} {user?.firstLastname} {user?.secondLastname}
           </Typography>
           <Typography color="text.secondary" gutterBottom variant="body1" mb={2} mt={-1}>
-            Administrador CIIS
+            {user.role == 3 ? "Organizador" : "Administrador"} CIIS
           </Typography>
           <Typography color="text.secondary" variant="body2">
             Tacna, Perú

@@ -23,7 +23,7 @@ export const vistaOrganizador = [
   },
   {
     title: "Asistencia",
-    path: "/",
+    path: "/attendance",
     icon: (
       <SvgIcon fontSize="small">
         <HowToRegIcon />
@@ -53,7 +53,7 @@ export const vistaOrganizador = [
 export const vistaAdministrador = [
   {
     title: "Asistencia",
-    path: "/",
+    path: "/attendance",
     icon: (
       <SvgIcon fontSize="small">
         <HowToRegIcon />

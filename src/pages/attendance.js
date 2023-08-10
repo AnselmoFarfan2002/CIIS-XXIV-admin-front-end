@@ -31,7 +31,7 @@ const Page = () => {
   const handleScan = (result) => {
     if (result) {
       setResult(result);
-      fetch(result.text)
+      fetch(URI.attendance(12, result.text))
         .then((res) => {
           if (res.ok) return setSuccess(true);
           throw new Error();
@@ -48,8 +48,7 @@ const Page = () => {
       let dni = event.target.querySelector("input").value;
       fetch(URI.attendance(12, dni))
         .then((res) => {
-          console.log(res.status)
-          if (res.status === 201) return setSuccess(true);
+          if (res.ok) return setSuccess(true);
           throw new Error();
         })
         .catch(() => setFailure(true));
