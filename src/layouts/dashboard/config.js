@@ -14,7 +14,7 @@ import { SvgIcon } from "@mui/material";
 export const vistaOrganizador = [
   {
     title: "Clientes",
-    path: "/",
+    path: "/customer",
     icon: (
       <SvgIcon fontSize="small">
         <UsersIcon />
@@ -23,7 +23,7 @@ export const vistaOrganizador = [
   },
   {
     title: "Asistencia",
-    path: "/attendance",
+    path: "/",
     icon: (
       <SvgIcon fontSize="small">
         <HowToRegIcon />
@@ -53,7 +53,7 @@ export const vistaOrganizador = [
 export const vistaAdministrador = [
   {
     title: "Asistencia",
-    path: "/attendance",
+    path: "/",
     icon: (
       <SvgIcon fontSize="small">
         <HowToRegIcon />
