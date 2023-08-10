@@ -105,16 +105,16 @@ export const AuthProvider = (props) => {
     []
   );
 
-  const createAcc = async (newName, newFirstLastname, newSecondLastname, newEmail, newPhone, newPassword) => {
-    let response = await fetch(URI.sessions, {
-      method: "POST",
-      body: JSON.stringify({  }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
-  };
+  // const createAcc = async (newName, newFirstLastname, newSecondLastname, newEmail, newPhone, newPassword) => {
+  //   let response = await fetch(URI.sessions, {
+  //     method: "POST",
+  //     body: JSON.stringify({  }),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     credentials: "include",
+  //   });
+  // };
 
   const signIn = async (email, password) => {
     let response = await fetch(URI.sessions, {
@@ -181,7 +181,7 @@ export const AuthProvider = (props) => {
     <AuthContext.Provider
       value={{
         ...state,
-        createAcc,
+        // createAcc,
         signIn,
         signUp,
         signOut,
