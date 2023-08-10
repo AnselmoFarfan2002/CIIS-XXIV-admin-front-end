@@ -27,31 +27,36 @@ const Page = () => {
   const [scan, setScan] = useState(false);
   const [success, setSuccess] = useState(false);
   const [failure, setFailure] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  const requestAttendance = (event, userID, setSuccess, setFailure) => {
+    fetch(URI.attendance(event, userID), { method: "POST", credentials: "include" })
+      .then(async (res) => {
+        if (res.status == 201) {
+          setMsg("");
+          return setSuccess(true);
+        }
+        let serverMsg = await res.json();
+        console.log(serverMsg);
+        setMsg(serverMsg.error);
+        throw new Error();
+      })
+      .catch(() => setFailure(true));
+  };
 
   const handleScan = (result) => {
     if (result) {
       setResult(result);
-      fetch(URI.attendance(12, result.text))
-        .then((res) => {
-          if (res.ok) return setSuccess(true);
-          throw new Error();
-        })
-        .catch(() => setFailure(true));
+      requestAttendance(12, result.text, setSuccess, setFailure);
     }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(event.target);
 
     if (event.target.checkValidity()) {
       let dni = event.target.querySelector("input").value;
-      fetch(URI.attendance(12, dni))
-        .then((res) => {
-          if (res.ok) return setSuccess(true);
-          throw new Error();
-        })
-        .catch(() => setFailure(true));
+      requestAttendance(12, dni, setSuccess, setFailure);
     }
   };
 
@@ -191,6 +196,11 @@ const Page = () => {
             <Typography variant="h6" mb={2} textAlign={"center"}>
               Ocurrió un error durante la asistencia
             </Typography>
+            {msg && (
+              <Typography variant="body2" mb={2} textAlign={"center"}>
+                {msg}
+              </Typography>
+            )}
             <Typography align="center">
               <DangerousIcon sx={{ fontSize: 100 }} color="error" />
             </Typography>
