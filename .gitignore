@@ -12,7 +12,11 @@
 /build
 out
 .next
-
+cert.pem
+key.pem
+anselmo.local.key
+anselmo.local.csr
+anselmo.local.crt
 # misc
 .DS_Store
 .eslintcache

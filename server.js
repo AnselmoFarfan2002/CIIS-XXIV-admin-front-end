@@ -1,15 +1,24 @@
-const { createServer } = require("http");
+const { createServer } = require("https");
 const { parse } = require("url");
 const next = require("next");
+
+const fs = require("fs");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev: false });
 const handle = app.getRequestHandler();
 
-const port = process.env.port || 80;
+const port = process.env.port || 443;
 
 app.prepare().then(() => {
-  createServer((req, res) => {
+  const options = {
+    key: fs.readFileSync("anselmo.local.key").toString(),
+    cert: fs.readFileSync("anselmo.local.crt").toString(),
+  };
+
+  console.log(options);
+
+  createServer(options, (req, res) => {
     const parseUrl = parse(req.url, true);
     const { pathname, query } = parseUrl;
 
@@ -20,8 +29,8 @@ app.prepare().then(() => {
     } else {
       handle(req, res, parseUrl);
     }
-  }).listen(port, err => {
-    if(err) throw err
-    console.log("listos en el puerto", port)
+  }).listen(port, (err) => {
+    if (err) throw err;
+    console.log("listos en el puerto", port);
   });
 });

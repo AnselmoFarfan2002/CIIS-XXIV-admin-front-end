@@ -130,7 +130,6 @@ export const AuthProvider = (props) => {
 
     if (response.ok) {
       let userData = await response.json();
-      console.log(userData);
       // user = userData.resources[0];
       user = userData;
       user.avatar = "/assets/logos/logo-ciis-xxiv.png";
@@ -143,6 +142,8 @@ export const AuthProvider = (props) => {
         payload: user,
       });
     } else {
+      if (response.status == 409) return signOut().then(() => signIn(email, password));
+
       let error = await response.json();
       console.log(error);
 

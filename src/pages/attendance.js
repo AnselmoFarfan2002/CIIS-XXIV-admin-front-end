@@ -37,7 +37,6 @@ const Page = () => {
           return setSuccess(true);
         }
         let serverMsg = await res.json();
-        console.log(serverMsg);
         setMsg(serverMsg.error);
         throw new Error();
       })
@@ -159,9 +158,14 @@ const Page = () => {
                       <Box display={"flex"} justifyContent={"center"}>
                         {!result && scan ? (
                           <QrReader
+                            constraints={{
+                              video: {
+                                facingMode: "environment", // Acceder a la cámara trasera
+                              },
+                            }}
                             width={200}
                             height={200}
-                            onError={() => console.log("existe un error al escanear")}
+                            onError={(e) => console.log("existe un error al escanear", e)}
                             onScan={handleScan}
                           />
                         ) : (

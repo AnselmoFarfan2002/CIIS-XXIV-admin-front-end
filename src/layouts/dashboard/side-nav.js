@@ -17,8 +17,6 @@ export const SideNav = (props) => {
   if (user.role == 3) items = vistaAdministrador;
   else if (user.role == 1) items = vistaOrganizador;
 
-  console.log(items, user.role, vistaOrganizador);
-
   const pathname = usePathname();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
 
