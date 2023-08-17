@@ -13,12 +13,13 @@ import {
   DialogContent,
   Container,
   Typography,
+  OpenInNew,
 } from "@mui/material";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import DangerousIcon from "@mui/icons-material/Dangerous";
 import URI from "src/contexts/url-context";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
-import Input from "@mui/material/Input";
+import SvgIcon from "@mui/joy/SvgIcon";
+import { styled } from "@mui/joy";
 
 export const SpeakerForm = () => {
   const [success, setSuccess] = useState(false);
@@ -37,6 +38,7 @@ export const SpeakerForm = () => {
 
     if (event.target.checkValidity()) {
       let data = new FormData(event.target);
+      data.append("avatar", selectedFile);
       // displayFormData(data); // show form data at console
       fetch(URI.speakers, {
         method: "POST",
@@ -54,8 +56,22 @@ export const SpeakerForm = () => {
     }
   };
 
-  const handleUploadClick = () => {
-    console.log("Subiendo imagen:");
+  const VisuallyHiddenInput = styled("input")`
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    white-space: nowrap;
+    width: 1px;
+  `;
+
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
   };
 
   return (
@@ -87,42 +103,41 @@ export const SpeakerForm = () => {
                       <TextField fullWidth label="Red Social" name="socialNetwork" required />
                     </Grid>
                     <Grid xs={12} md={12}>
-                      <TextareaAutosize
-                        minRows={3}
-                        maxRows={10}
-                        placeholder="Descripción"
-                        name="desc"
-                        required
-                        style={{ width: "100%" }}
-                      />
+                      <TextField label="Descripción" name="desc" fullWidth multiline required />
                     </Grid>
-                    {/* <Grid xs={12} md={12}>
-                      <input
-                        accept="image/jpeg, image/png"
-                        className={classes.customInput}
-                        id="image-upload-input"
-                        type="file"
-                        onChange={handleImageChange}
-                      />
-                      <label htmlFor="image-upload-input">
-                        <Button fullWidth variant="text" component="span">
-                          Subir imagen
-                        </Button>
-                      </label>
-                    </Grid> */}
                     <Grid xs={12} md={12}>
-                      <Button fullWidth variant="text" onClick={handleUploadClick}>
-                        Subir Imagen
-                      </Button>
-                      {/* <Input
-                        fullWidth
-                        type="file"
-                        inputProps={{
-                          accept: "image/jpeg, image/png",
-                        }}
-                        name="avatar"
+                      <Button
                         required
-                      /> */}
+                        name="avatar"
+                        component="label"
+                        role={undefined}
+                        tabIndex={-1}
+                        variant="outlined"
+                        startDecorator={
+                          <SvgIcon>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
+                              />
+                            </svg>
+                          </SvgIcon>
+                        }
+                      >
+                        Añadir Foto
+                        <VisuallyHiddenInput
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                        />
+                      </Button>
                     </Grid>
                   </Grid>
                 </Box>
