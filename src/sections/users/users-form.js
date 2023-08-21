@@ -17,51 +17,11 @@ import {
 import VerifiedIcon from "@mui/icons-material/Verified";
 import DangerousIcon from "@mui/icons-material/Dangerous";
 import URI from "src/contexts/url-context";
-
-// import { useFormik } from 'formik';
-
-// const states = [
-//   {
-//     value: "alabama",
-//     label: "Alabama",
-//   },
-//   {
-//     value: "new-york",
-//     label: "New York",
-//   },
-//   {
-//     value: "san-francisco",
-//     label: "San Francisco",
-//   },
-//   {
-//     value: "los-angeles",
-//     label: "Los Angeles",
-//   },
-// ];
-
+import { FormData2Json } from "src/utils/form-data-json";
 
 export const UsersForm = () => {
   const [success, setSuccess] = useState(false);
   const [failure, setFailure] = useState(false);
-
-  // const formik = useFormik({
-  //   initialValues: {
-  //     newEmail: '',
-  //     newName: '',
-  //     newPassword: '',
-  //     submit: null
-  //   },
-  //   onSubmit: async (values, helpers) => {
-  //     try {
-  //       await auth.createAcc(values.newName, values.newFirstLastname, values.newSecondLastname, values.newEmail, values.newPhone, values.newPassword);
-  //       router.push('/');
-  //     } catch (err) {
-  //       helpers.setStatus({ success: false });
-  //       helpers.setErrors({ submit: err.message });
-  //       helpers.setSubmitting(false);
-  //     }
-  //   }
-  // });
 
   const handleCloseSuccess = () => {
     setSuccess(false);
@@ -76,19 +36,28 @@ export const UsersForm = () => {
 
     if (event.target.checkValidity()) {
       let data = new FormData(event.target);
-      // displayFormData(data); // show form data at console
+      let jsonData = {};
+      data.forEach((value, key) => {
+        jsonData[key] = value;
+      });
+      console.log(FormData2Json(data));
       fetch(URI.users, {
         method: "POST",
-        body: data,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jsonData),
+        credentials: "include",
       })
-        .then( async (res) => {
+        .then(async (res) => {
           if (res.ok) return setSuccess(false);
-          let serverResponse = await res.json()
-          throw new Error(serverResponse)
+          let serverResponse = await res.json();
+          throw new Error(serverResponse);
         })
         .catch((err) => {
-          console.log(err); 
-          setFailure(true)});
+          console.log(err);
+          setFailure(true);
+        });
     }
   };
 
@@ -106,45 +75,19 @@ export const UsersForm = () => {
                 <Box sx={{ m: -1.5 }}>
                   <Grid container spacing={3}>
                     <Grid xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label="Nombres"
-                        name="name"
-                        required
-                      />
+                      <TextField fullWidth label="Nombres" name="name" required />
                     </Grid>
                     <Grid xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label="Apellidos"
-                        name="lastname"
-                        required
-                      />
+                      <TextField fullWidth label="Apellidos" name="lastname" required />
                     </Grid>
                     <Grid xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label="DNI"
-                        name="dni"
-                        required
-                      />
+                      <TextField fullWidth label="DNI" name="dni" required />
                     </Grid>
                     <Grid xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label="Correo electrónico"
-                        name="email"
-                        required
-                      />
+                      <TextField fullWidth label="Correo electrónico" name="email" required />
                     </Grid>
                     <Grid xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label="Celular"
-                        name="phone"
-                        type="text"
-                        required
-                      />
+                      <TextField fullWidth label="Celular" name="phone" type="text" required />
                     </Grid>
                     <Grid xs={12} md={6}>
                       <TextField

@@ -20,6 +20,7 @@ import DangerousIcon from "@mui/icons-material/Dangerous";
 import URI from "src/contexts/url-context";
 import SvgIcon from "@mui/joy/SvgIcon";
 import { styled } from "@mui/joy";
+import { FormData2Json } from "src/utils/form-data-json";
 
 export const SpeakerForm = () => {
   const [success, setSuccess] = useState(false);
@@ -39,10 +40,12 @@ export const SpeakerForm = () => {
     if (event.target.checkValidity()) {
       let data = new FormData(event.target);
       data.append("avatar", selectedFile);
+      console.log(FormData2Json(data));
       // displayFormData(data); // show form data at console
       fetch(URI.speakers, {
         method: "POST",
         body: data,
+        credentials: "include",
       })
         .then(async (res) => {
           if (res.ok) return setSuccess(false);
@@ -88,51 +91,38 @@ export const SpeakerForm = () => {
                 <Box sx={{ m: -1.5 }}>
                   <Grid container spacing={3}>
                     <Grid xs={12} md={6}>
-                      <TextField fullWidth label="Nombres y Apellidos" name="name" required />
+                      <TextField fullWidth label="Nombres " name="name" required />
+                    </Grid>
+                    <Grid xs={12} md={6}>
+                      <TextField fullWidth label="Apellidos" name="lastname" required />
                     </Grid>
                     <Grid xs={12} md={6}>
                       <TextField fullWidth label="Rol" name="role" required />
                     </Grid>
                     <Grid xs={12} md={6}>
-                      <TextField fullWidth label="Lugar de trabajo" name="placeWork" required />
+                      <TextField fullWidth label="Lugar de trabajo" name="workplace" required />
                     </Grid>
                     <Grid xs={12} md={6}>
-                      <TextField fullWidth label="Nacionalidad" name="nacionality" required />
+                      <TextField fullWidth label="Nacionalidad" name="nationality" required />
                     </Grid>
                     <Grid xs={12} md={12}>
                       <TextField fullWidth label="Red Social" name="socialNetwork" required />
                     </Grid>
                     <Grid xs={12} md={12}>
-                      <TextField label="Descripción" name="desc" fullWidth multiline required />
+                      <TextField label="Descripción" name="description" fullWidth multiline required />
                     </Grid>
                     <Grid xs={12} md={12}>
                       <Button
                         required
-                        name="avatar"
+                        // name="avatar"
                         component="label"
                         role={undefined}
                         tabIndex={-1}
                         variant="outlined"
-                        startDecorator={
-                          <SvgIcon>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
-                              />
-                            </svg>
-                          </SvgIcon>
-                        }
                       >
                         Añadir Foto
                         <VisuallyHiddenInput
+                          // name="avatar"
                           type="file"
                           accept="image/*"
                           onChange={handleFileChange}
