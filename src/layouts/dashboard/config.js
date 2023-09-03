@@ -48,6 +48,15 @@ export const vistaOrganizador = [
       </SvgIcon>
     ),
   },
+  {
+    title: "Sponsors",
+    path: "/sponsor",
+    icon: (
+      <SvgIcon fontSize="small">
+        <CogIcon />
+      </SvgIcon>
+    ),
+  },
 ];
 
 export const vistaAdministrador = [
