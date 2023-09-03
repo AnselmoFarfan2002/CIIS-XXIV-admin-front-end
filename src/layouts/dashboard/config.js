@@ -11,7 +11,7 @@ import HowToRegIcon from "@mui/icons-material/HowToReg";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { SvgIcon } from "@mui/material";
 
-export const vistaOrganizador = [
+export const vistaAdministrador = [
   {
     title: "Clientes",
     path: "/customer",
@@ -59,7 +59,7 @@ export const vistaOrganizador = [
   },
 ];
 
-export const vistaAdministrador = [
+export const vistaOrganizador = [
   {
     title: "Asistencia",
     path: "/attendance",

@@ -14,7 +14,8 @@ export const SideNav = (props) => {
 
   const { user } = useAuth();
   let items = [];
-  if (user.role == 3) items = vistaAdministrador;
+  console.log(user);
+  if (user.role == 1) items = vistaAdministrador;
   else if (user.role == 2) items = vistaOrganizador;
 
   const pathname = usePathname();
