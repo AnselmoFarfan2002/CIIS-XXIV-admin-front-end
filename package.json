@@ -38,6 +38,7 @@
     "react-spinners": "^0.13.8",
     "react-viewerjs": "^0.1.9",
     "simplebar-react": "^3.2.1",
+    "uuid": "^9.0.0",
     "yet-another-react-lightbox": "^3.11.4",
     "yup": "1.0.0"
   },
