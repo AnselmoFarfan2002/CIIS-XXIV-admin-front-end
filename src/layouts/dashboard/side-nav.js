@@ -9,12 +9,14 @@ import { vistaOrganizador, vistaAdministrador } from "./config";
 import { SideNavItem } from "./side-nav-item";
 import { useAuth } from "src/hooks/use-auth";
 
+const role = ["", "Administrador", "Organizador"];
+
 export const SideNav = (props) => {
   const { open, onClose } = props;
 
   const { user } = useAuth();
   let items = [];
-  console.log(user);
+  // console.log(user);
   if (user.role == 1) items = vistaAdministrador;
   else if (user.role == 2) items = vistaOrganizador;
 
@@ -69,7 +71,7 @@ export const SideNav = (props) => {
                 CIIS
               </Typography>
               <Typography color="neutral.400" variant="body2">
-                Administrador
+                {role[user.role]}
               </Typography>
             </div>
             <SvgIcon fontSize="small" sx={{ color: "neutral.500" }}>
