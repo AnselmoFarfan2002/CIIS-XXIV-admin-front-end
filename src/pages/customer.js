@@ -28,7 +28,7 @@ const Page = () => {
     // Función asincrónica para obtener los datos de los clientes
     const fetchCustomers = async () => {
       try {
-        let data = await fetch(URI.registrations + `?limit=${1000}`, {
+        let data = await fetch(URI.events.one(24).reservation.ciis + `?limit=${1000}`, {
           method: "GET",
           credentials: "include",
         });

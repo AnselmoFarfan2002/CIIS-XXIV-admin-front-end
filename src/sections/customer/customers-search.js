@@ -2,7 +2,8 @@ import MagnifyingGlassIcon from "@heroicons/react/24/solid/MagnifyingGlassIcon";
 import { Avatar, Card, Button, InputAdornment, OutlinedInput, SvgIcon } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import PropTypes from "prop-types";
-import { Download } from "@mui/icons-material";
+import { Download, Summarize, SummarizeOutlined } from "@mui/icons-material";
+import { IconButton } from "yet-another-react-lightbox";
 
 export const CustomersSearch = ({ handleSetCounter, status }) => (
   <Card sx={{ p: 2 }}>
@@ -27,23 +28,17 @@ export const CustomersSearch = ({ handleSetCounter, status }) => (
     <Button
       variant="contained"
       color="success"
-      sx={{ 
+      sx={{
         marginLeft: 2,
-        backgroundColor: '#1C2536',}}
+      }}
       href={
         "https://ciistacna.com/api/v1/reports/event/12/registrations/" +
         (status ? "?status=" + status : "")
       }
+      target="_blank"
     >
       {/* <Download sx={{ margin: 0 }} /> */}
-      <Avatar
-            src={"/assets/logos/logo-excel.png"}
-            sx={{
-              height: 30,
-              margin: 0,
-              width: 30,
-            }}
-          />
+      <SummarizeOutlined />
     </Button>
   </Card>
 );

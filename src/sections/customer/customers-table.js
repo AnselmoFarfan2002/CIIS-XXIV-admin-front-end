@@ -118,11 +118,10 @@ export const CustomersTable = (props) => {
             <TableBody>
               {items.map((customer, idx) => {
                 let slides = [];
-                slides.push({ src: domain + `/api/v1/registrations/${customer.id}/files/voucher` });
-                if (customer.typeattendee != 3)
-                  slides.push({
-                    src: domain + `/api/v1/registrations/${customer.id}/files/university`,
-                  });
+                slides.push({ src: domain + "/api/v2" + customer.dir_voucher });
+                console.log(customer);
+                if (customer.dir_fileuniversity)
+                  slides.push({ src: domain + "/api/v2" + customer.dir_fileuniversity });
 
                 customer.slides = slides;
 
