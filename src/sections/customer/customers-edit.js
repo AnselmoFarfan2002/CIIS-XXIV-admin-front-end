@@ -69,7 +69,7 @@ const CustomerFormEdit = (props) => {
     if (event.target.checkValidity()) {
       let data = new FormData(event.target);
       // displayFormData(data); // show form data at console
-      fetch(URI.registrations + `/${user2edit.id}`, {
+      fetch(URI.registrations + `/${user2edit?.id}`, {
         method: "PUT",
         body: data,
         credentials: "include",
@@ -170,7 +170,7 @@ const CustomerFormEdit = (props) => {
                     mb={2}
                     sx={{
                       background: `url(${
-                        selectedVoucher || `${user2edit?.slides[0].src}?rand=${v4()}`
+                        selectedVoucher || `${user2edit?.slides[0]?.src}?rand=${v4()}`
                       })`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
@@ -199,7 +199,7 @@ const CustomerFormEdit = (props) => {
                 </label>
               </Box>
             </Grid>
-            {user2edit?.typeattendee != 3 && (
+            {user2edit?.typeattendee.isuniversity && (
               <Grid item md={6} xs={12}>
                 <Box display={"flex"} flexDirection={"column"} justifyContent={"center"}>
                   <Box mx={"auto"}>
@@ -209,7 +209,7 @@ const CustomerFormEdit = (props) => {
                       mb={2}
                       sx={{
                         background: `url(${
-                          selectedUniversity || `${user2edit?.slides[1].src}?rand=${v4()}`
+                          selectedUniversity || `${user2edit?.slides[1]?.src}?rand=${v4()}`
                         })`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
