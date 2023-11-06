@@ -16,6 +16,7 @@ import PropTypes from "prop-types";
 import { FileUpload } from "@mui/icons-material";
 import { useState } from "react";
 import URI from "src/contexts/url-context";
+import { v4 } from "uuid";
 
 function displayFormData(formData) {
   formData.forEach((value, key) => {
@@ -68,13 +69,17 @@ const CustomerFormEdit = (props) => {
     if (event.target.checkValidity()) {
       let data = new FormData(event.target);
       // displayFormData(data); // show form data at console
-      fetch(URI.registrations + `/${user2edit.id}`, {
+      fetch(URI.registrations + `/${user2edit?.id}`, {
         method: "PUT",
         body: data,
+        credentials: "include",
       })
         .then((res) => {
           if (res.ok) return handleSetCounter();
-          throw new Error();
+          else {
+            res.json().then((a) => console.log(a));
+            throw new Error();
+          }
         })
         .catch((err) => setMsgErrorServer(true));
     } else setMsgError(true);
@@ -164,7 +169,9 @@ const CustomerFormEdit = (props) => {
                     minWidth={200}
                     mb={2}
                     sx={{
-                      background: `url(${selectedVoucher || user2edit?.slides[0].src})`,
+                      background: `url(${
+                        selectedVoucher || `${user2edit?.slides[0]?.src}?rand=${v4()}`
+                      })`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                     }}
@@ -192,7 +199,7 @@ const CustomerFormEdit = (props) => {
                 </label>
               </Box>
             </Grid>
-            {user2edit?.typeattendee != 3 && (
+            {user2edit?.typeattendee.isuniversity && (
               <Grid item md={6} xs={12}>
                 <Box display={"flex"} flexDirection={"column"} justifyContent={"center"}>
                   <Box mx={"auto"}>
@@ -201,7 +208,9 @@ const CustomerFormEdit = (props) => {
                       minWidth={200}
                       mb={2}
                       sx={{
-                        background: `url(${selectedUniversity || user2edit?.slides[1].src})`,
+                        background: `url(${
+                          selectedUniversity || `${user2edit?.slides[1]?.src}?rand=${v4()}`
+                        })`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                       }}

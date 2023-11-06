@@ -34,6 +34,7 @@ import FeedIcon from "@mui/icons-material/Feed";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { FileUpload } from "@mui/icons-material";
 import CustomerFormEdit from "./customers-edit";
+import Swal from "sweetalert2";
 
 export const CustomersTable = (props) => {
   const {
@@ -41,16 +42,13 @@ export const CustomersTable = (props) => {
     items = [],
     onPageChange = () => {},
     handleSetCounter = () => {},
-    counter = 0,
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
-    selected = [],
+    rowsPerPageOptions = [1, 2],
   } = props;
 
-  const typeIns = ["", "Legado de la ESIS", "Estudiante externo", "Publico general"];
   const statusContent = [
-    {},
     { style: "rgb(219, 129, 10)", label: "Pendiente" },
     { style: "rgb(0,200,0)", label: "Confirmado" },
     { style: "rgb(200,20,0)", label: "Observado" },
@@ -60,9 +58,9 @@ export const CustomersTable = (props) => {
   const [openGallery, setOpenGallery] = useState(false);
 
   const [openForm, setOpenForm] = useState(false);
-  const [user2edit, setUser2edit] = useState(items[0]);
+  const [user2edit, setUser2edit] = useState(null);
 
-  const handleChangeStatus = ({ id }, status, idx) => {
+  const handleChangeStatusConfirm = ({ id }, status, idx) => {
     let buttonCheck = document.getElementById("btn-check-user-" + id);
     let buttonAlert = document.getElementById("btn-alert-user-" + id);
     buttonCheck.disabled = true;
@@ -70,7 +68,7 @@ export const CustomersTable = (props) => {
     buttonCheck.classList.add("Mui-disabled");
     buttonAlert.classList.add("Mui-disabled");
 
-    fetch(URI.registrations + `/${id}/status`, {
+    fetch(URI.reservation.one(id).src, {
       method: "PATCH",
       body: JSON.stringify({ status }),
       headers: {
@@ -92,6 +90,21 @@ export const CustomersTable = (props) => {
         console.log(res);
       });
   };
+
+  function handleChangeStatus({ id }, status, idx) {
+    Swal.fire({
+      title: "¿Está seguro?",
+      html: `Está a punto de <b>${
+        status == 1 ? "aceptar" : "observar"
+      }</b> la inscripción, no habrá vuelta atrás y se le notificará al usuario.`,
+      icon: "question",
+      confirmButtonText: "Confirmar",
+      showCancelButton: true,
+      cancelButtonText: "Cancelar",
+    }).then((op) => {
+      if (op.isConfirmed) handleChangeStatusConfirm({ id }, status, idx);
+    });
+  }
 
   const handleOpenForm = (user) => {
     setOpenForm(true);
@@ -118,11 +131,9 @@ export const CustomersTable = (props) => {
             <TableBody>
               {items.map((customer, idx) => {
                 let slides = [];
-                slides.push({ src: domain + `/api/v1/registrations/${customer.id}/files/voucher` });
-                if (customer.typeattendee != 3)
-                  slides.push({
-                    src: domain + `/api/v1/registrations/${customer.id}/files/university`,
-                  });
+                slides.push({ src: domain + "/api/v2" + customer.dir_voucher });
+                if (customer.dir_fileuniversity)
+                  slides.push({ src: domain + "/api/v2" + customer.dir_fileuniversity });
 
                 customer.slides = slides;
 
@@ -137,7 +148,7 @@ export const CustomersTable = (props) => {
                     </TableCell>
                     <TableCell>{customer.email}</TableCell>
                     <TableCell>{customer.phone}</TableCell>
-                    <TableCell>{typeIns[customer.typeattendee]}</TableCell>
+                    <TableCell>{customer.typeattendee.name_attendee}</TableCell>
                     <TableCell>
                       <Typography
                         fontWeight={"bold"}
@@ -162,7 +173,7 @@ export const CustomersTable = (props) => {
                       </IconButton>
                     </TableCell>
                     <TableCell>
-                      {customer.typeattendee != 3 && (
+                      {customer.typeattendee.isuniversity && (
                         <IconButton
                           aria-label="Ver voucher"
                           size="medium"
@@ -185,7 +196,7 @@ export const CustomersTable = (props) => {
                           color="success"
                           disabled={customer.enrollmentstatus == 2}
                           title="Confirmar"
-                          onClick={() => handleChangeStatus(customer, "2", idx)}
+                          onClick={() => handleChangeStatus(customer, 1, idx)}
                         >
                           <CheckCircleIcon />
                         </Button>
@@ -194,7 +205,7 @@ export const CustomersTable = (props) => {
                           color="error"
                           disabled={customer.enrollmentstatus == 2}
                           title="Observar"
-                          onClick={() => handleChangeStatus(customer, "3", idx)}
+                          onClick={() => handleChangeStatus(customer, 2, idx)}
                         >
                           <ErrorIcon />
                         </Button>
@@ -226,7 +237,7 @@ export const CustomersTable = (props) => {
         onRowsPerPageChange={onRowsPerPageChange}
         page={page}
         rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 25, 100]}
+        rowsPerPageOptions={rowsPerPageOptions}
       />
 
       <Lightbox

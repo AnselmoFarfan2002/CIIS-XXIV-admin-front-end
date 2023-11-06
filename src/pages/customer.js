@@ -22,46 +22,43 @@ const Page = () => {
   const [total, setTotal] = useState(0);
   const [counter, setCounter] = useState(0);
 
+  const fetchCustomers = async () => {
+    try {
+      let data = await fetch(URI.events.one(24).reservation.ciis + `?limit=${1000}`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      data = await data.json();
+      data = data.registrations;
+
+      // Aquí aplicamos la lógica para filtrar los clientes según el showOption y paginarlos
+      let data2render = [];
+      let noConfirmados = data.filter((a) => a.enrollmentstatus != 2);
+      noConfirmados.sort((a, b) => a.enrollmentstatus - b.enrollmentstatus);
+
+      if (showOption == 0) {
+        let confirmados = data.filter((a) => a.enrollmentstatus == 2);
+        data2render = [...noConfirmados, ...confirmados];
+      } else if (showOption == 1)
+        data2render = noConfirmados.filter((a) => a.enrollmentstatus == 1);
+      else if (showOption == 2) data2render = data.filter((a) => a.enrollmentstatus == 2);
+      else if (showOption == 3) data2render = noConfirmados.filter((a) => a.enrollmentstatus == 3);
+
+      // Actualizamos el estado customers con los datos obtenidos y marcamos loading como falso
+      setCustomers(applyPagination(data2render, page, rowsPerPage));
+      setLoading(false);
+      setTotal(data2render.length);
+    } catch (error) {
+      // Si hay un error, mostramos un mensaje o manejo de errores según tus necesidades
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     setLoading(true); // Indicamos que se están cargando los datos
-
-    // Función asincrónica para obtener los datos de los clientes
-    const fetchCustomers = async () => {
-      try {
-        let data = await fetch(URI.registrations + `?limit=${1000}`, {
-          method: "GET",
-          credentials: "include",
-        });
-
-        data = await data.json();
-        data = data.registrations;
-
-        // Aquí aplicamos la lógica para filtrar los clientes según el showOption y paginarlos
-        let data2render = [];
-        let noConfirmados = data.filter((a) => a.enrollmentstatus != 2);
-        noConfirmados.sort((a, b) => a.enrollmentstatus - b.enrollmentstatus);
-
-        if (showOption == 0) {
-          let confirmados = data.filter((a) => a.enrollmentstatus == 2);
-          data2render = [...noConfirmados, ...confirmados];
-        } else if (showOption == 1)
-          data2render = noConfirmados.filter((a) => a.enrollmentstatus == 1);
-        else if (showOption == 2) data2render = data.filter((a) => a.enrollmentstatus == 2);
-        else if (showOption == 3)
-          data2render = noConfirmados.filter((a) => a.enrollmentstatus == 3);
-
-        // Actualizamos el estado customers con los datos obtenidos y marcamos loading como falso
-        setCustomers(applyPagination(data2render, page, rowsPerPage));
-        setLoading(false);
-        setTotal(data2render.length);
-      } catch (error) {
-        // Si hay un error, mostramos un mensaje o manejo de errores según tus necesidades
-        setLoading(false);
-      }
-    };
-
     fetchCustomers();
-  }, [page, rowsPerPage, showOption, counter, total]);
+  }, [rowsPerPage, showOption, page, counter]);
 
   const handlePageChange = useCallback((event, value) => {
     setPage(value);
@@ -69,13 +66,10 @@ const Page = () => {
 
   const handleRowsPerPageChange = useCallback((event) => {
     setPage(0);
-    setRowsPerPage(event.target.value);
   }, []);
 
   const handleChangeFilter = useCallback((event) => {
     setPage(0);
-    setShowOption(event.target.value);
-    console.log(event.target.value, showOption);
   }, []);
 
   const handleSetCounter = useCallback(() => {
@@ -132,6 +126,7 @@ const Page = () => {
                 onRowsPerPageChange={handleRowsPerPageChange}
                 page={page}
                 rowsPerPage={rowsPerPage}
+                rowsPerPageOptions={[5, 10, 25, 100]}
               />
             )}
           </Stack>

@@ -50,6 +50,7 @@ export const UsersForm = () => {
         credentials: "include",
       })
         .then(async (res) => {
+        .then(async (res) => {
           if (res.ok) return setSuccess(false);
           let serverResponse = await res.json();
           throw new Error(serverResponse);
@@ -76,17 +77,22 @@ export const UsersForm = () => {
                   <Grid container spacing={3}>
                     <Grid xs={12} md={6}>
                       <TextField fullWidth label="Nombres" name="name" required />
+                      <TextField fullWidth label="Nombres" name="name" required />
                     </Grid>
                     <Grid xs={12} md={6}>
+                      <TextField fullWidth label="Apellidos" name="lastname" required />
                       <TextField fullWidth label="Apellidos" name="lastname" required />
                     </Grid>
                     <Grid xs={12} md={6}>
                       <TextField fullWidth label="DNI" name="dni" required />
+                      <TextField fullWidth label="DNI" name="dni" required />
                     </Grid>
                     <Grid xs={12} md={6}>
                       <TextField fullWidth label="Correo electrónico" name="email" required />
+                      <TextField fullWidth label="Correo electrónico" name="email" required />
                     </Grid>
                     <Grid xs={12} md={6}>
+                      <TextField fullWidth label="Celular" name="phone" type="text" required />
                       <TextField fullWidth label="Celular" name="phone" type="text" required />
                     </Grid>
                     <Grid xs={12} md={6}>

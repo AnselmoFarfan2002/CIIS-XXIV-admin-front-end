@@ -130,7 +130,9 @@ export const AuthProvider = (props) => {
 
     if (response.ok) {
       let userData = await response.json();
-      // user = userData.resources[0];
+
+      if (userData.role == 2) throw new Error("Usuario no autorizado");
+
       user = userData;
       user.avatar = "/assets/logos/logo-ciis-xxiv.png";
 
