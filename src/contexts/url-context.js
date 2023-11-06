@@ -4,6 +4,7 @@ export const domain = "https://ciistacna.com";
 const URI = {
   sessions: domain + "/api/v2/session",
   registrations: domain + "/api/v1/registrations",
+  taller: domain + "/api/v2/taller",
   reservation: {
     src: domain + "/api/v2/reservation",
     one: (id) => ({ src: `${domain}/api/v2/reservation/${id}` }),

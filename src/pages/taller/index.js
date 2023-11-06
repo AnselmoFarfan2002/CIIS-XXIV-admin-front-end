@@ -2,9 +2,11 @@ import { useCallback, useMemo, useState, useEffect } from "react";
 import Head from "next/head";
 import { Box, Container, Stack, Typography, Unstable_Grid2 as Grid } from "@mui/material";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
-import { TallerInformacion } from "src/sections/taller/specific-taller";
+import { TallerInformacion } from "src/sections/taller/inscritos-table";
 import { TallerTable } from "src/sections/taller/taller-table";
 import URI from "src/contexts/url-context";
+import { saveOnChest } from "src/utils/chest";
+import { useRouter } from "next/router";
 // import { useFormik } from 'formik';
 
 const Page = () => {
@@ -37,7 +39,8 @@ const Page = () => {
         fetchTaller();
       },[]);
     
-    
+    const router = useRouter();
+
     const tallerId = async (taller)=>{
         try{
             let unTaller = await fetch (`${URI.taller}/${taller.id}`, {
@@ -46,9 +49,8 @@ const Page = () => {
             });
 
             unTaller = await unTaller.json();
-
-            console.log(unTaller);
-
+            saveOnChest("taller",unTaller);
+            router.push("/taller/inscritos");
         }
         catch (error) {
             // Si hay un error, mostramos un mensaje o manejo de errores según tus necesidades
@@ -70,19 +72,6 @@ const Page = () => {
             py: 8,
         }}
         >
-        <Container maxWidth="lg">
-            <Stack spacing={3}>
-            <div>
-                <Typography variant="h4">Taller de xxx</Typography>
-            </div>
-            <div>
-                <Grid xs={12} md={6} lg={8}>
-                <TallerInformacion />
-                </Grid>
-            </div>
-            </Stack>
-        </Container>
-
 
         <Container maxWidth="lg">
             <Stack spacing={3}>
