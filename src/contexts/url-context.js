@@ -7,6 +7,7 @@ const URI = {
   users: domain + "/api/v1/users",
   events: domain + "/api/v1/events",
   speakers: domain + "/api/v1/speakers",
+  taller: domain + "/api/v2/taller",
 };
 
 export default URI;
