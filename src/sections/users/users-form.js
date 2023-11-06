@@ -50,7 +50,6 @@ export const UsersForm = () => {
         credentials: "include",
       })
         .then(async (res) => {
-        .then(async (res) => {
           if (res.ok) return setSuccess(false);
           let serverResponse = await res.json();
           throw new Error(serverResponse);
