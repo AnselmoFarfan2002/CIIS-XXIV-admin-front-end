@@ -31,6 +31,15 @@ export const vistaAdministrador = [
     ),
   },
   {
+    title: "Talleres",
+    path: "/taller",
+    icon: (
+      <SvgIcon fontSize="small">
+        <HowToRegIcon />
+      </SvgIcon>
+    ),
+  },
+  {
     title: "Perfil",
     path: "/account",
     icon: (

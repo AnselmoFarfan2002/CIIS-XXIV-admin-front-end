@@ -13,34 +13,16 @@ import {
   DialogContent,
   Container,
   Typography,
+  OpenInNew,
 } from "@mui/material";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import DangerousIcon from "@mui/icons-material/Dangerous";
 import URI from "src/contexts/url-context";
+import SvgIcon from "@mui/joy/SvgIcon";
+import { styled } from "@mui/joy";
+import { FormData2Json } from "src/utils/form-data-json";
 
-// import { useFormik } from 'formik';
-
-// const states = [
-//   {
-//     value: "alabama",
-//     label: "Alabama",
-//   },
-//   {
-//     value: "new-york",
-//     label: "New York",
-//   },
-//   {
-//     value: "san-francisco",
-//     label: "San Francisco",
-//   },
-//   {
-//     value: "los-angeles",
-//     label: "Los Angeles",
-//   },
-// ];
-
-
-export const UsersForm = () => {
+export const SpeakerForm = () => {
   const [success, setSuccess] = useState(false);
   const [failure, setFailure] = useState(false);
 
@@ -57,17 +39,12 @@ export const UsersForm = () => {
 
     if (event.target.checkValidity()) {
       let data = new FormData(event.target);
-      let jsonData = {};
-      data.forEach((value, key) => {
-        jsonData[key] = value;
-      });
+      data.append("avatar", selectedFile);
       console.log(FormData2Json(data));
-      fetch(URI.users, {
+      // displayFormData(data); // show form data at console
+      fetch(URI.speakers, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(jsonData),
+        body: data,
         credentials: "include",
       })
         .then(async (res) => {
@@ -80,6 +57,24 @@ export const UsersForm = () => {
           setFailure(true);
         });
     }
+  };
+
+  const VisuallyHiddenInput = styled("input")`
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    white-space: nowrap;
+    width: 1px;
+  `;
+
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
   };
 
   return (
@@ -96,28 +91,43 @@ export const UsersForm = () => {
                 <Box sx={{ m: -1.5 }}>
                   <Grid container spacing={3}>
                     <Grid xs={12} md={6}>
-                      <TextField fullWidth label="Nombres" name="name" required />
+                      <TextField fullWidth label="Nombres " name="name" required />
                     </Grid>
                     <Grid xs={12} md={6}>
                       <TextField fullWidth label="Apellidos" name="lastname" required />
                     </Grid>
                     <Grid xs={12} md={6}>
-                      <TextField fullWidth label="DNI" name="dni" required />
+                      <TextField fullWidth label="Rol" name="role" required />
                     </Grid>
                     <Grid xs={12} md={6}>
-                      <TextField fullWidth label="Correo electrónico" name="email" required />
+                      <TextField fullWidth label="Lugar de trabajo" name="workplace" required />
                     </Grid>
                     <Grid xs={12} md={6}>
-                      <TextField fullWidth label="Celular" name="phone" type="text" required />
+                      <TextField fullWidth label="Nacionalidad" name="nationality" required />
                     </Grid>
-                    <Grid xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label="Contraseña"
-                        name="password"
-                        type="password"
+                    <Grid xs={12} md={12}>
+                      <TextField fullWidth label="Red Social" name="socialNetwork" required />
+                    </Grid>
+                    <Grid xs={12} md={12}>
+                      <TextField label="Descripción" name="description" fullWidth multiline required />
+                    </Grid>
+                    <Grid xs={12} md={12}>
+                      <Button
                         required
-                      />
+                        // name="avatar"
+                        component="label"
+                        role={undefined}
+                        tabIndex={-1}
+                        variant="outlined"
+                      >
+                        Añadir Foto
+                        <VisuallyHiddenInput
+                          // name="avatar"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                        />
+                      </Button>
                     </Grid>
                   </Grid>
                 </Box>
@@ -125,18 +135,19 @@ export const UsersForm = () => {
               <Divider />
               <CardActions sx={{ justifyContent: "flex-end" }}>
                 <Button type="submit" variant="contained">
-                  Crear cuenta
+                  Añadir ponente
                 </Button>
               </CardActions>
             </Card>
           </form>
         </Grid>
       </Grid>
+
       <Dialog open={success} onClose={handleCloseSuccess}>
         <DialogContent>
           <Container>
             <Typography variant="h6" mb={2} textAlign={"center"}>
-              Cuenta añadida con éxito
+              Ponente añadido con éxito
             </Typography>
             <Typography align="center">
               <VerifiedIcon sx={{ fontSize: 100 }} color="success" />
@@ -144,6 +155,7 @@ export const UsersForm = () => {
           </Container>
         </DialogContent>
       </Dialog>
+
       <Dialog open={failure} onClose={handleCloseFailure}>
         <DialogContent>
           <Container>
