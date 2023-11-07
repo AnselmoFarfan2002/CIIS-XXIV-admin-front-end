@@ -105,18 +105,22 @@ export const TallerTable = (props) => {
             <TableHead>
               <TableRow>
                 <TableCell>Nombre</TableCell>
+                <TableCell>N° de inscritos</TableCell>
                 <TableCell>Precio</TableCell>
-                <TableCell>Estado</TableCell>
-                <TableCell>Voucher</TableCell>
-                <TableCell>Acciones</TableCell>
+                <TableCell>Ponente</TableCell>
+                <TableCell>Fecha</TableCell>
+                <TableCell>Hora de inicio</TableCell>
+                <TableCell>Hora final</TableCell>
+                <TableCell>Acción</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {items.map((customer, idx) => {
                 let slides = [];
                 slides.push({ src: domain + `/api/v2/taller/${customer.id}` });
-
+                
                 customer.slides = slides;
+                // console.log(slides);
 
                 return (
                   <TableRow hover key={customer.id}>
@@ -127,31 +131,12 @@ export const TallerTable = (props) => {
                         </Typography>
                       </Stack>
                     </TableCell>
+                    <TableCell>{customer.tickets-customer.avaible}</TableCell>
                     <TableCell>{customer.price}</TableCell>
-                    {/*<TableCell>{typeIns[customer.typeattendee]}</TableCell>
-                    <TableCell>
-                      <Typography
-                        fontWeight={"bold"}
-                        color={statusContent[customer.enrollmentstatus].style}
-                      >
-                        {statusContent[customer.enrollmentstatus].label}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        aria-label="Ver voucher"
-                        size="medium"
-                        onClick={() => {
-                          setCurrentImages({ slides, index: 0 });
-                          setOpenGallery(true);
-                        }}
-                        color="light"
-                        sx={{ border: 0.2, borderColor: "rgba(28, 37, 54, .5)" }}
-                        variant="contained"
-                      >
-                        <RequestQuoteIcon />
-                      </IconButton>
-                    </TableCell> */}
+                    <TableCell>{customer.relatedSpeaker.name_speaker} {customer.relatedSpeaker.lastname_speaker}</TableCell>
+                    <TableCell style={{ width: '120px' }}>{customer.date}</TableCell>
+                    <TableCell>{customer.start}</TableCell>
+                    <TableCell>{customer.end}</TableCell>
                     <TableCell>
                         <IconButton onClick={()=>tallerId(customer)}>
                             <Pageview></Pageview>
