@@ -15,7 +15,8 @@ import Grid from '@mui/material/Grid';
 import { TablaInscritos } from "src/sections/taller/inscritos-table";
 
 const Page = () => {
-    const taller = takeFromChest("taller");
+
+    let taller = takeFromChest("taller");
     // console.log(taller);
 
     return (
@@ -38,7 +39,7 @@ const Page = () => {
             <div>
                 <Grid xs={12} md={6} lg={8}>
                     <TablaInscritos 
-                        taller = {taller}  
+                        primTaller = {taller}  
                     />
                 </Grid>
             </div>

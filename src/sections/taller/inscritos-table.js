@@ -8,6 +8,13 @@ import IconButton from "@mui/material/IconButton";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 import { useState } from "react";
 import { domain } from "src/contexts/url-context";
+import Button from "@mui/material/Button";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ErrorIcon from "@mui/icons-material/Error";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import Swal from "sweetalert2";
+import URI from "src/contexts/url-context";
+import { saveOnChest, takeFromChest } from "src/utils/chest";
 
 import Lightbox from "yet-another-react-lightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
@@ -16,9 +23,71 @@ import "yet-another-react-lightbox/styles.css";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 
-export const TablaInscritos = ({ taller }) => {
+const tallerId = async (taller) => {
+  try {
+    let unTaller = await fetch(`${URI.taller}/${taller.id}`, {
+      method: "GET",
+      credentials: "include",
+    });
+    unTaller = await unTaller.json();
+    console.log(unTaller);
+    saveOnChest("taller", unTaller);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const TablaInscritos = ({ primTaller }) => {
   const [currentImages, setCurrentImages] = useState({});
   const [openGallery, setOpenGallery] = useState(false);
+  const [taller, setTaller] = useState(primTaller);
+
+  const handleChangeStatusConfirm = ({ id }, state, idx) => {
+    let buttonCheck = document.getElementById("btn-check-user-" + id);
+    let buttonAlert = document.getElementById("btn-alert-user-" + id);
+    buttonCheck.disabled = true;
+    buttonAlert.disabled = true;
+    buttonCheck.classList.add("Mui-disabled");
+    buttonAlert.classList.add("Mui-disabled");
+
+    fetch(`${URI.taller}/${taller.id}/inscription/${idx}`, {
+      method: "PATCH",
+      body: JSON.stringify({ state }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then(async (res) => {
+        if (res.status == 204) {
+          await tallerId(taller);
+          setTaller(takeFromChest("taller"));
+        } else {
+          buttonCheck.disabled = false;
+          buttonAlert.disabled = false;
+          buttonCheck.classList.remove("Mui-disabled");
+          buttonAlert.classList.remove("Mui-disabled");
+        }
+      })
+      .catch((res) => {
+        console.log(res);
+      });
+  };
+
+  function handleChangeStatus({ id }, status, idx) {
+    Swal.fire({
+      title: "¿Está seguro?",
+      html: `Está a punto de <b>${
+        status == 1 ? "aceptar" : "observar"
+      }</b> la inscripción, no habrá vuelta atrás y se le notificará al usuario.`,
+      icon: "question",
+      confirmButtonText: "Confirmar",
+      showCancelButton: true,
+      cancelButtonText: "Cancelar",
+    }).then((op) => {
+      if (op.isConfirmed) handleChangeStatusConfirm({ id }, status, idx);
+    });
+  }
 
   const columns = [
     {
@@ -74,7 +143,7 @@ export const TablaInscritos = ({ taller }) => {
             onClick={() => {
               let slides = [];
               slides.push({ src: domain + "/api/v2" + params.value });
-              console.log(slides);
+              // console.log(slides);
               // customer.slides = slides;
 
               setCurrentImages({ slides, index: 0 });
@@ -89,33 +158,62 @@ export const TablaInscritos = ({ taller }) => {
         </TableCell>
       ),
     },
-    // {
-    //     field: 'relatedUser',
-    //     headerName: 'Correo',
-    //     width: 250,
-    //     renderCell: (params) =>{
-    //       let Correo = params.value;
-    //       return capitalizeWords (`${Correo.email_user}`)
-    //     }
-    // },
 
     {
-      field: "actions",
+      field: "Correo",
+      headerName: "Correo",
+      width: 250,
+      renderCell: (params) => {
+        let Correo = params.row.relatedUser;
+        return `${Correo.email_user}`;
+      },
+    },
+
+    {
+      field: "Acciones",
       headerName: "Acciones",
       width: 160,
-      renderCell: (params) => {
-        return (
-          <div>
-            <button onClick={() => handleButton1Click(params.row.id)}>Botón 1</button>
-            <button onClick={() => handleButton2Click(params.row.id)}>Botón 2</button>
-          </div>
-        );
-      },
+      renderCell: (params) => (
+        <TableCell>
+          {/* {console.log(params)} */}
+          <ButtonGroup variant="contained" aria-label="Controles de confirmación">
+            <Button
+              id={"btn-check-user-" + params.row.id}
+              color="success"
+              disabled={params.row.status == 2}
+              title="Confirmar"
+              onClick={() => handleChangeStatus(params, 1, params.row.id)}
+            >
+              <CheckCircleIcon />
+            </Button>
+            <Button
+              id={"btn-alert-user-" + params.id}
+              color="error"
+              disabled={params.row.status == 2}
+              title="Observar"
+              onClick={() => handleChangeStatus(params, 2, params.row.id)}
+            >
+              <ErrorIcon />
+            </Button>
+            {/* {params.status == 3 && (
+                    <Button
+                    id={"btn-edit-user-" + params.id}
+                    color="info"
+                    disabled={params.status == 2}
+                    title="Editar"
+                    onClick={() => handleOpenForm(params)}
+                    >
+                    <BorderColorIcon />
+                    </Button>
+                )} */}
+          </ButtonGroup>
+        </TableCell>
+      ),
     },
   ];
 
   const rows = taller.inscriptions;
-  console.log(rows);
+  // console.log(rows);
 
   return (
     <Box sx={{ height: 400, width: "100%" }}>
