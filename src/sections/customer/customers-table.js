@@ -42,7 +42,7 @@ export const CustomersTable = (props) => {
     items = [],
     onPageChange = () => {},
     handleSetCounter = () => {},
-    onRowsPerPageChange,
+    onRowsPerPageChange = () => {},
     page = 0,
     rowsPerPage = 0,
     rowsPerPageOptions = [1, 2],
@@ -194,7 +194,7 @@ export const CustomersTable = (props) => {
                         <Button
                           id={"btn-check-user-" + customer.id}
                           color="success"
-                          disabled={customer.enrollmentstatus == 2}
+                          disabled={[1].includes(customer.enrollmentstatus)}
                           title="Confirmar"
                           onClick={() => handleChangeStatus(customer, 1, idx)}
                         >
@@ -203,7 +203,7 @@ export const CustomersTable = (props) => {
                         <Button
                           id={"btn-alert-user-" + customer.id}
                           color="error"
-                          disabled={customer.enrollmentstatus == 2}
+                          disabled={[1, 2].includes(customer.enrollmentstatus)}
                           title="Observar"
                           onClick={() => handleChangeStatus(customer, 2, idx)}
                         >
