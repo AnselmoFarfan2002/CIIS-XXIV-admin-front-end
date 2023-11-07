@@ -1,61 +1,90 @@
-import { useCallback, useMemo, useState, useEffect } from "react";
-import Head from "next/head";
-import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
-import { TallerInformacion } from "src/sections/taller/inscritos-table";
-import { TallerTable } from "src/sections/taller/taller-table";
-import URI from "src/contexts/url-context";
-import { saveOnChest, takeFromChest } from "src/utils/chest";
-import { useRouter } from "next/router";
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
-
+import { capitalize } from '@mui/material';
+import capitalizeWords from 'src/utils/capitalizeWords';
 
 const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
+    { 
+        field: 'id', 
+        headerName: 'ID', 
+        width: 90 
+    },
     {
-      field: 'firstName',
-      headerName: 'First name',
+        field: 'createdAt',
+        headerName: 'Fecha creada',
+        width: 150,
+        renderCell: (params) => new Date(params.value).toLocaleDateString(),
+    },
+    {
+      field: 'state',
+      headerName: 'Estado',
       width: 150,
-      editable: true,
+      renderCell: (params) => {
+        let textColor = 'black';
+        let customContent = '';
+  
+        if (params.value === 0) {
+          textColor = 'black'; // Color de texto para el estado 0
+          customContent = 'Pendiente';
+        } else if (params.value === 1) {
+          textColor = 'green'; // Color de texto para el estado 1
+          customContent = 'Confirmado';
+        } else if (params.value === 2) {
+          textColor = 'red'; // Color de texto para el estado 2
+          customContent = 'Observado';
+        }
+        return <div style={{ color: textColor }}>{customContent}</div>;
+      },
     },
     {
-      field: 'lastName',
-      headerName: 'Last name',
-      width: 150,
-      editable: true,
+      field: 'relatedUser',
+      headerName: 'Usuario',
+      width: 300,
+      renderCell: (params) =>{
+        let User = params.value; 
+        return capitalizeWords (`${User.name_user} ${User.lastname_user}`)
+      }
     },
+    // {
+    //     field: 'relatedUser',
+    //     headerName: 'Correo',
+    //     width: 250,
+    //     renderCell: (params) =>{
+    //       let Correo = params.value; 
+    //       return capitalizeWords (`${Correo.email_user}`)
+    //     }
+    // },
+
     {
-      field: 'age',
-      headerName: 'Age',
-      type: 'number',
-      width: 110,
-      editable: true,
-    },
-    {
-      field: 'fullName',
-      headerName: 'Full name',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
+      field: 'actions',
+      headerName: 'Acciones',
       width: 160,
-      valueGetter: (params) =>
-        `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+      renderCell: (params) => {
+        return (
+          <div>
+            <button onClick={() => handleButton1Click(params.row.id)}>Botón 1</button>
+            <button onClick={() => handleButton2Click(params.row.id)}>Botón 2</button>
+          </div>
+        );
+      },
     },
   ];
   
-  const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-  ];
+// const rows = [
+//     { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
+// ];
 
-export const TallerInscritos = () => {
+// console.log(rows);
+
+export const TablaInscritos = ({taller}) => {
+
+    // const rows = taller || [];
+    // console.log(rows);
+
+    const rows = taller.inscriptions;
+    console.log(rows);
+
     return (
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
@@ -69,7 +98,6 @@ export const TallerInscritos = () => {
             },
           }}
           pageSizeOptions={[5]}
-          checkboxSelection
           disableRowSelectionOnClick
         />
       </Box>
