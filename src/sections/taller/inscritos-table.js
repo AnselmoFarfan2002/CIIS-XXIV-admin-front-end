@@ -156,7 +156,7 @@ export const TablaInscritos = ({ primTaller }) => {
         if (Celular.phone_user) {
           return `${Celular.phone_user}`;
         } else {
-          return "No registrado"; 
+          return "No especificado"; 
         }
       },
     },
