@@ -45,7 +45,7 @@ export const TallerTable = (props) => {
     page = 0,
     rowsPerPage = 0,
     selected = [],
-    tallerId = function(){},
+    tallerId = function () {},
   } = props;
 
   const typeIns = ["", "Legado de la ESIS", "Estudiante externo", "Publico general"];
@@ -118,7 +118,7 @@ export const TallerTable = (props) => {
               {items.map((customer, idx) => {
                 let slides = [];
                 slides.push({ src: domain + `/api/v2/taller/${customer.id}` });
-                
+
                 customer.slides = slides;
                 // console.log(slides);
 
@@ -126,21 +126,22 @@ export const TallerTable = (props) => {
                   <TableRow hover key={customer.id}>
                     <TableCell>
                       <Stack alignItems="center" direction="row" spacing={2}>
-                        <Typography variant="subtitle2">
-                          {customer.name}
-                        </Typography>
+                        <Typography variant="subtitle2">{customer.name}</Typography>
                       </Stack>
                     </TableCell>
-                    <TableCell>{customer.tickets-customer.avaible}</TableCell>
+                    <TableCell>{customer.tickets - customer.avaible}</TableCell>
                     <TableCell>{customer.price}</TableCell>
-                    <TableCell>{customer.relatedSpeaker.name_speaker} {customer.relatedSpeaker.lastname_speaker}</TableCell>
-                    <TableCell style={{ width: '120px' }}>{customer.date}</TableCell>
+                    <TableCell>
+                      {customer.relatedSpeaker.name_speaker}{" "}
+                      {customer.relatedSpeaker.lastname_speaker}
+                    </TableCell>
+                    <TableCell style={{ width: "120px" }}>{customer.date}</TableCell>
                     <TableCell>{customer.start}</TableCell>
                     <TableCell>{customer.end}</TableCell>
                     <TableCell>
-                        <IconButton onClick={()=>tallerId(customer)}>
-                            <Pageview></Pageview>
-                        </IconButton>
+                      <IconButton onClick={() => tallerId(customer)}>
+                        <Pageview></Pageview>
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 );
