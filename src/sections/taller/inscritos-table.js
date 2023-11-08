@@ -15,6 +15,7 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import Swal from "sweetalert2";
 import URI from "src/contexts/url-context";
 import { saveOnChest, takeFromChest } from "src/utils/chest";
+import { useAuth } from "src/hooks/use-auth";
 
 import Lightbox from "yet-another-react-lightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
@@ -22,6 +23,7 @@ import "yet-another-react-lightbox/styles.css";
 
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
+
 
 const tallerId = async (taller) => {
   try {
@@ -38,6 +40,11 @@ const tallerId = async (taller) => {
 };
 
 export const TablaInscritos = ({ primTaller }) => {
+  
+  const { user } = useAuth();
+
+  console.log(primTaller);
+
   const [currentImages, setCurrentImages] = useState({});
   const [openGallery, setOpenGallery] = useState(false);
   const [taller, setTaller] = useState(primTaller);
@@ -132,9 +139,31 @@ export const TablaInscritos = ({ primTaller }) => {
       },
     },
     {
+      field: "Correo",
+      headerName: "Correo",
+      width: 250,
+      renderCell: (params) => {
+        let Correo = params.row.relatedUser;
+        return `${Correo.email_user}`;
+      },
+    },
+    {
+      field: "Celular",
+      headerName: "Celular",
+      width: 150,
+      renderCell: (params) => {
+        let Celular = params.row.relatedUser;
+        if (Celular.phone_user) {
+          return `${Celular.phone_user}`;
+        } else {
+          return "No registrado"; 
+        }
+      },
+    },
+    {
       field: "voucher",
       headerName: "Ver Voucher",
-      width: 150,
+      width: 120,
       renderCell: (params) => (
         <TableCell>
           <IconButton
@@ -160,22 +189,14 @@ export const TablaInscritos = ({ primTaller }) => {
     },
 
     {
-      field: "Correo",
-      headerName: "Correo",
-      width: 250,
-      renderCell: (params) => {
-        let Correo = params.row.relatedUser;
-        return `${Correo.email_user}`;
-      },
-    },
-
-    {
       field: "Acciones",
       headerName: "Acciones",
       width: 160,
+      // hide: user.role !== 1,
+      // hide: true,
       renderCell: (params) => (
         <TableCell>
-          {/* {console.log(params)} */}
+          {/* {user.role === 1 && ( */}
           <ButtonGroup variant="contained" aria-label="Controles de confirmación">
             <Button
               id={"btn-check-user-" + params.row.id}
@@ -195,31 +216,34 @@ export const TablaInscritos = ({ primTaller }) => {
             >
               <ErrorIcon />
             </Button>
-            {/* {params.status == 3 && (
-                    <Button
-                    id={"btn-edit-user-" + params.id}
-                    color="info"
-                    disabled={params.status == 2}
-                    title="Editar"
-                    onClick={() => handleOpenForm(params)}
-                    >
-                    <BorderColorIcon />
-                    </Button>
-                )} */}
           </ButtonGroup>
+          {/* )} */}
         </TableCell>
       ),
     },
   ];
 
+  const hideAccionesColumn = user.role !== 1;
+
+  const filteredColumns = columns.filter((column) => {
+    if (hideAccionesColumn && column.field === "Acciones" ) {
+      return false;
+    }
+    if (hideAccionesColumn && column.field === "voucher" ) {
+      return false;
+    }
+    return true; // Mantén las demás columnas visibles
+  });
+
   const rows = taller.inscriptions;
   // console.log(rows);
+  // console.log(user.role);
 
   return (
     <Box sx={{ height: 400, width: "100%" }}>
       <DataGrid
         rows={rows}
-        columns={columns}
+        columns={filteredColumns}
         initialState={{
           pagination: {
             paginationModel: {

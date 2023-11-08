@@ -87,4 +87,13 @@ export const vistaOrganizador = [
       </SvgIcon>
     ),
   },
+  {
+    title: "Talleres",
+    path: "/taller",
+    icon: (
+      <SvgIcon fontSize="small">
+        <HowToRegIcon />
+      </SvgIcon>
+    ),
+  },
 ];
