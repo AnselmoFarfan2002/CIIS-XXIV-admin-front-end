@@ -68,7 +68,7 @@ export const CustomersTable = (props) => {
     buttonCheck.classList.add("Mui-disabled");
     buttonAlert.classList.add("Mui-disabled");
 
-    fetch(`${URI.reservation}/${taller.id}`, {
+    fetch(URI.reservation.one(id).src, {
       method: "PATCH",
       body: JSON.stringify({ status }),
       headers: {
