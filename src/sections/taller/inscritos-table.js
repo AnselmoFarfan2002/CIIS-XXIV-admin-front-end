@@ -98,11 +98,6 @@ export const TablaInscritos = ({ primTaller }) => {
 
   const columns = [
     {
-      field: "id",
-      headerName: "ID",
-      width: 90,
-    },
-    {
       field: "createdAt",
       headerName: "Fecha creada",
       width: 150,
@@ -240,14 +235,14 @@ export const TablaInscritos = ({ primTaller }) => {
   // console.log(user.role);
 
   return (
-    <Box sx={{ height: 400, width: "100%" }}>
+    <Box sx={{ width: "100%" }}>
       <DataGrid
         rows={rows}
         columns={filteredColumns}
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 5,
+              pageSize: 22,
             },
           },
         }}

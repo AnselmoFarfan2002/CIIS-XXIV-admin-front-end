@@ -66,6 +66,7 @@ const Page = () => {
 
   const handleRowsPerPageChange = useCallback((event) => {
     setPage(0);
+    setRowsPerPage(event.target.value);
   }, []);
 
   const handleChangeFilter = useCallback((event) => {

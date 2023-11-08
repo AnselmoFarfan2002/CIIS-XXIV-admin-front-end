@@ -29,8 +29,8 @@ export const SpeakerForm = () => {
   return (
     <>
       <Grid container spacing={3}>
-        {speakerData.map((speaker) => (
-          <Grid xs={12} sm={6} md={4}>
+        {speakerData.map((speaker, idx) => (
+          <Grid xs={12} sm={6} md={4} key={"speaker-data-v2-" + idx}>
             <Card sx={{ maxWidth: 345 }}>
               <CardMedia
                 component="img"
