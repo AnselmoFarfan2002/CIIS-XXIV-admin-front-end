@@ -67,7 +67,7 @@ const Page = () => {
         <Container maxWidth="lg">
           <Stack spacing={3}>
             <div>
-              <Typography variant="h4">Lista de taFlleres</Typography>
+              <Typography variant="h4">Lista de talleres</Typography>
             </div>
             <div>
               <Grid xs={12} md={6} lg={8}>
