@@ -198,7 +198,9 @@ const Page = () => {
                             onChange={(event) => {
                               setScan(false);
                               setSelectedEntry(event.target.value);
-                              setTimeout(() => setScan(true), 500);
+                              if (scan) {
+                                setTimeout(() => setScan(true), 500);
+                              }
                             }}
                           >
                             <FormControlLabel
