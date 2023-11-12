@@ -10,6 +10,7 @@ import UsersIcon from "@heroicons/react/24/solid/UsersIcon";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { SvgIcon } from "@mui/material";
+import { AppRegistration } from "@mui/icons-material";
 
 export const vistaAdministrador = [
   {
@@ -17,7 +18,16 @@ export const vistaAdministrador = [
     path: "/customer",
     icon: (
       <SvgIcon fontSize="small">
-        <UsersIcon />
+        <AppRegistration />
+      </SvgIcon>
+    ),
+  },
+  {
+    title: "Talleres",
+    path: "/taller",
+    icon: (
+      <SvgIcon fontSize="small">
+        <AppRegistration />
       </SvgIcon>
     ),
   },
@@ -31,11 +41,11 @@ export const vistaAdministrador = [
     ),
   },
   {
-    title: "Talleres",
-    path: "/taller",
+    title: "Inscripción",
+    path: "/inscription",
     icon: (
       <SvgIcon fontSize="small">
-        <HowToRegIcon />
+        <PersonAddIcon />
       </SvgIcon>
     ),
   },
@@ -48,24 +58,24 @@ export const vistaAdministrador = [
       </SvgIcon>
     ),
   },
-  {
-    title: "Añadir cuenta",
-    path: "/users",
-    icon: (
-      <SvgIcon fontSize="small">
-        <PersonAddIcon />
-      </SvgIcon>
-    ),
-  },
-  {
-    title: "Sponsors",
-    path: "/sponsor",
-    icon: (
-      <SvgIcon fontSize="small">
-        <CogIcon />
-      </SvgIcon>
-    ),
-  },
+  // {
+  //   title: "Añadir cuenta",
+  //   path: "/users",
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <PersonAddIcon />
+  //     </SvgIcon>
+  //   ),
+  // },
+  // {
+  //   title: "Sponsors",
+  //   path: "/sponsor",
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <CogIcon />
+  //     </SvgIcon>
+  //   ),
+  // },
 ];
 
 export const vistaOrganizador = [
