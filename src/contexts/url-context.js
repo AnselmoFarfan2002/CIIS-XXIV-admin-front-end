@@ -7,6 +7,7 @@ const URI = {
   taller: domain + "/api/v2/taller",
   reservation: {
     src: domain + "/api/v2/reservation",
+    qr: domain + "/api/v2/reservation/qr",
     one: (id) => ({ src: `${domain}/api/v2/reservation/${id}` }),
   },
   attendance: (idEvent, idUser) => domain + `/api/v2/conference/event/${idEvent}/attendance?user=${idUser}`,
