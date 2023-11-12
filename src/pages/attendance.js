@@ -28,9 +28,16 @@ const Page = () => {
   const [success, setSuccess] = useState(false);
   const [failure, setFailure] = useState(false);
   const [msg, setMsg] = useState("");
+  const [switchIsActive, setSwitchIsActive] = useState(true);
 
-  const requestAttendance = (event, userID, setSuccess, setFailure) => {
-    fetch(URI.attendance(event, userID), { method: "POST", credentials: "include" })
+  const requestAttendance = (event, userID, setSuccess, setFailure, setSwitchIsActive) => {
+    const requestBody = switchIsActive ? { entry: 1 } : { entry: 0 };
+    
+    fetch(URI.attendance(event, userID), { 
+      method: "POST", 
+      credentials: "include", 
+      body: JSON.stringify(requestBody)
+    })
       .then(async (res) => {
         if (res.status == 201) {
           setMsg("");
@@ -44,9 +51,20 @@ const Page = () => {
   };
 
   const handleScan = (result) => {
-    if (result) {
-      setResult(result);
-      requestAttendance(12, result.text, setSuccess, setFailure);
+    if (result && result.text) {
+      try {
+        const jsonResult = JSON.parse(result.text);
+        if (jsonResult && jsonResult.dni) {
+          const dniValue = jsonResult.dni;
+          setResult(dniValue);
+          // console.log(dniValue);
+          requestAttendance(24, dniValue, setSuccess, setFailure, switchIsActive);
+        } else {
+          console.error("El campo 'dni' no está presente en el objeto JSON.");
+        }
+      } catch (error) {
+        console.error("Error al analizar el JSON:", error);
+      }
     }
   };
 
@@ -55,7 +73,7 @@ const Page = () => {
 
     if (event.target.checkValidity()) {
       let dni = event.target.querySelector("input").value;
-      requestAttendance(12, dni, setSuccess, setFailure);
+      requestAttendance(24, dni, setSuccess, setFailure, switchIsActive);
     }
   };
 
@@ -144,6 +162,15 @@ const Page = () => {
                         }}
                       >
                         <Typography variant="h6">Marcar por scan QR</Typography>
+                        <Box>
+                          <Typography variant="title2">Body en 1 o 0 no entendí</Typography>
+                          <Switch
+                            inputProps={{ "aria-label": "Color switch demo" }}
+                            color="secondary"
+                            checked={switchIsActive}
+                            onChange={() => setSwitchIsActive(!switchIsActive)}
+                          />
+                        </Box>
 
                         <Box>
                           <Typography variant="title2">Habilitar escaner QR</Typography>
