@@ -71,6 +71,7 @@ const Page = () => {
 
   const handleChangeFilter = useCallback((event) => {
     setPage(0);
+    setShowOption(event.target.value);
   }, []);
 
   const handleSetCounter = useCallback(() => {
@@ -105,10 +106,10 @@ const Page = () => {
                     label="Age"
                     onChange={handleChangeFilter}
                   >
-                    <MenuItem value={0}>Listar todos</MenuItem>
-                    <MenuItem value={1}>Listar Pendientes</MenuItem>
-                    <MenuItem value={3}>Listar Observados</MenuItem>
-                    <MenuItem value={2}>Listar Confirmados</MenuItem>
+                    {/* <MenuItem value={0}>Listar todos</MenuItem> */}
+                    <MenuItem value={0}>Listar Todos</MenuItem>
+                    <MenuItem value={2}>Listar Observados</MenuItem>
+                    <MenuItem value={1}>Listar Confirmados</MenuItem>
                   </Select>
                   <FormHelperText>Filtro de listado de presinscripciones</FormHelperText>
                 </FormControl>

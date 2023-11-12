@@ -21,44 +21,71 @@ import { useState } from "react";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import DangerousIcon from "@mui/icons-material/Dangerous";
 import URI from "src/contexts/url-context";
+import { Radio, RadioGroup, FormControlLabel } from "@mui/material";
+import Swal from "sweetalert2";
+import { PacmanLoader } from "react-spinners";
 
 const Page = () => {
   const [result, setResult] = useState(null);
   const [scan, setScan] = useState(false);
   const [success, setSuccess] = useState(false);
   const [failure, setFailure] = useState(false);
-  const [msg, setMsg] = useState("");
-  const [switchIsActive, setSwitchIsActive] = useState(true);
+  const [scanning, setScanning] = useState(false);
+  const [selectedEntry, setSelectedEntry] = useState("1");
 
-  const requestAttendance = (event, userID, setSuccess, setFailure, setSwitchIsActive) => {
-    const requestBody = switchIsActive ? { entry: 1 } : { entry: 0 };
-    
-    fetch(URI.attendance(event, userID), { 
-      method: "POST", 
-      credentials: "include", 
-      body: JSON.stringify(requestBody)
+  const requestAttendance = (event, userID) => {
+    const requestBody = { entry: Number(selectedEntry) };
+    setScanning(true);
+
+    fetch(URI.attendance(event, userID), {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody),
     })
       .then(async (res) => {
-        if (res.status == 201) {
-          setMsg("");
-          return setSuccess(true);
-        }
         let serverMsg = await res.json();
-        setMsg(serverMsg.error);
-        throw new Error();
+        if (res.ok) {
+          Swal.fire({
+            title: "Listo",
+            text: serverMsg.message,
+            icon: "success",
+          });
+        } else {
+          if (serverMsg.code == 409) {
+            Swal.fire({
+              title: "Duplicado",
+              text: "Ya se marcó asistencia",
+              icon: "error",
+            });
+          } else {
+            throw new Error();
+          }
+        }
       })
-      .catch(() => setFailure(true));
+      .catch(() =>
+        Swal.fire({
+          title: "Error",
+          text: "Ocurrio un error inesperado",
+          icon: "error",
+        })
+      )
+      .finally(() => {
+        setResult(null);
+        setScanning(false);
+      });
   };
 
   const handleScan = (result) => {
     if (result && result.text) {
+      console.log(result);
       try {
         const jsonResult = JSON.parse(result.text);
         if (jsonResult && jsonResult.dni) {
           const dniValue = jsonResult.dni;
           setResult(dniValue);
           // console.log(dniValue);
-          requestAttendance(24, dniValue, setSuccess, setFailure, switchIsActive);
+          requestAttendance(24, dniValue);
         } else {
           console.error("El campo 'dni' no está presente en el objeto JSON.");
         }
@@ -73,7 +100,7 @@ const Page = () => {
 
     if (event.target.checkValidity()) {
       let dni = event.target.querySelector("input").value;
-      requestAttendance(24, dni, setSuccess, setFailure, switchIsActive);
+      requestAttendance(24, dni);
     }
   };
 
@@ -150,6 +177,52 @@ const Page = () => {
                     </CardContent>
                   </Card>
                 </Grid>
+
+                <Grid item md={4} xs={12}>
+                  <Card>
+                    <CardContent>
+                      <Box
+                        sx={{
+                          alignItems: "center",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 1,
+                        }}
+                      >
+                        <Typography variant="h6">Estado de marcar asistencia</Typography>
+                        <Box>
+                          <RadioGroup
+                            aria-label="entry"
+                            name="entry"
+                            value={selectedEntry}
+                            onChange={(event) => {
+                              setScan(false);
+                              setSelectedEntry(event.target.value);
+                              setTimeout(() => setScan(true), 500);
+                            }}
+                          >
+                            <FormControlLabel
+                              value="0"
+                              control={<Radio />}
+                              label="Deshabilitar marcado de asistencia de usuario"
+                            />
+                            <FormControlLabel
+                              value="1"
+                              control={<Radio />}
+                              label="Marcar asistencia"
+                            />
+                            <FormControlLabel
+                              value="2"
+                              control={<Radio />}
+                              label="Habilitar marcado de asistencia de usuario"
+                            />
+                          </RadioGroup>
+                        </Box>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+
                 <Grid item md={6} xs={12}>
                   <Card>
                     <CardContent>
@@ -162,15 +235,6 @@ const Page = () => {
                         }}
                       >
                         <Typography variant="h6">Marcar por scan QR</Typography>
-                        <Box>
-                          <Typography variant="title2">Body en 1 o 0 no entendí</Typography>
-                          <Switch
-                            inputProps={{ "aria-label": "Color switch demo" }}
-                            color="secondary"
-                            checked={switchIsActive}
-                            onChange={() => setSwitchIsActive(!switchIsActive)}
-                          />
-                        </Box>
 
                         <Box>
                           <Typography variant="title2">Habilitar escaner QR</Typography>
@@ -183,7 +247,11 @@ const Page = () => {
                       </Box>
 
                       <Box display={"flex"} justifyContent={"center"}>
-                        {!result && scan ? (
+                        {scanning ? (
+                          <>
+                            <PacmanLoader></PacmanLoader>
+                          </>
+                        ) : !result && scan ? (
                           <QrReader
                             constraints={{
                               video: {
@@ -207,37 +275,6 @@ const Page = () => {
           </Stack>
         </Container>
       </Box>
-
-      <Dialog open={success} onClose={handleCloseSuccess}>
-        <DialogContent>
-          <Container>
-            <Typography variant="h6" mb={2} textAlign={"center"}>
-              Asistencia marcada con éxito
-            </Typography>
-            <Typography align="center">
-              <VerifiedIcon sx={{ fontSize: 100 }} color="success" />
-            </Typography>
-          </Container>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={failure} onClose={handleCloseFailure}>
-        <DialogContent>
-          <Container>
-            <Typography variant="h6" mb={2} textAlign={"center"}>
-              Ocurrió un error durante la asistencia
-            </Typography>
-            {msg && (
-              <Typography variant="body2" mb={2} textAlign={"center"}>
-                {msg}
-              </Typography>
-            )}
-            <Typography align="center">
-              <DangerousIcon sx={{ fontSize: 100 }} color="error" />
-            </Typography>
-          </Container>
-        </DialogContent>
-      </Dialog>
     </>
   );
 };
